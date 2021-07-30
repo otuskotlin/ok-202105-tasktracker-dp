@@ -18,4 +18,4 @@ Usually come to our service from context ad in other study/work-related resource
   Maybe it is unnecessary.
 
 ## UI sketch
-![Sketch](documentation/TaskTrackerUIScetch.jpg)
+![Sketch](documentation/TaskTrackerUISketch.jpg)
