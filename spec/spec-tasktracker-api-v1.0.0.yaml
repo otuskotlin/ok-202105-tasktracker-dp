@@ -1,0 +1,279 @@
+openapi: 3.0.3
+info:
+  title: Tasktracker
+  description: this API allows to manage user tasks in tasktracker application
+  version: 1.0.0
+externalDocs:
+  description: No particular doc currently except for github repo README
+  url: https://github.com/otuskotlin/ok-202105-tasktracker-dp/blob/main/README.md
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: task
+    description: This is the main CRUD of the application which provides everything related to task entity
+paths:
+  /task/all:
+    post:
+      tags:
+        - task listing
+      summary: list of all current tasks available
+      operationId: listAllTasks
+      requestBody:
+        description: holds nothing particular except basic constructs
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAllTasksRequest'
+      responses:
+        200:
+          description: holds list of all tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllTasksResponse'
+  /task/create:
+    post:
+      tags:
+        - task creating
+      summary: create a new task
+      operationId: createNewTask
+      requestBody:
+        description: holds new task name and decription
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+        required: true
+      responses:
+        200:
+          description: holds success or failure info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskResponse'
+  /tasks/read:
+    post:
+      tags:
+        - tasks read
+      summary: reading task by id
+      operationId: getTaskWithId
+      requestBody:
+        description: must provide the id of task
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadTaskRequest'
+        required: true
+      responses:
+        200:
+          description: holds the task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadTaskResponse'
+  /task/update:
+    post:
+      tags:
+        - task update
+      summary: update properties of the task given task
+      operationId: updateTask
+      requestBody:
+        description: must provide the task to update with new fields state
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+        required: true
+      responses:
+        200:
+          description: shows that the update is completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTaskResponse'
+  /task/delete:
+    post:
+      tags:
+        - task delete
+      summary: delete task by given id
+      operationId: deleteTask
+      requestBody:
+        description: must provide task id to delete
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTaskRequest'
+        required: true
+      responses:
+        200:
+          description: returns id of deleted task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteTaskResponse'
+
+components:
+  schemas:
+
+    BaseMessage:
+      type: object
+      properties:
+        messageType:
+          type: string
+      discriminator:
+        propertyName: messageType
+
+    BaseRequest:
+      type: object
+      properties:
+        requestId:
+          type: string
+        debug:
+          $ref: '#/components/schemas/Debug'
+
+    BaseResponse:
+      type: object
+      properties:
+        responseId:
+          type: string
+        result:
+          type: string
+          enum:
+            - success
+            - error
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiError'
+
+    ListAllTasksRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+
+    ListAllTasksResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            availableTasks:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatableTask'
+
+    CreateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            createTask:
+              $ref: '#/components/schemas/CreatableTask'
+            debug:
+              type: object
+              properties:
+                stub:
+                  type: string
+                  enum:
+                    - success
+                    - nameEmpty
+                    - errorDb
+
+    CreateTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            createdTask:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    ReadTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    ReadTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    UpdateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    UpdateTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    DeleteTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    DeleteTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    ApiError:
+      type: object
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+
+    Debug:
+      type: object
+      properties:
+        mode:
+          type: string
+          default:
+            prod
+        stub:
+          type: string
+
+    CreatableTask:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    UpdatableTask:
+      allOf:
+        - $ref: '#/components/schemas/CreatableTask'
+        - type: object
+          properties:
+            id:
+              type: string
