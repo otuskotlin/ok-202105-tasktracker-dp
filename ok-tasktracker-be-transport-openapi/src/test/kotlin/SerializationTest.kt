@@ -7,6 +7,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class SerializationTest {
+
     @Test
     fun simpleSerialization() {
         val mapper = ObjectMapper()
@@ -24,4 +25,6 @@ internal class SerializationTest {
         assertEquals(ReadTaskRequest::class.java, deserializedObj::class.java)
         assertEquals(obj, deserializedObj)
     }
+
+
 }

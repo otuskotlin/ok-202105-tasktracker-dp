@@ -4,6 +4,9 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskRequest
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
+import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
+import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -18,7 +21,7 @@ internal class MapperTest {
 
         context.setQuery(request)
 
-        assertEquals("some-id", context.requestTask.task.id)
+        assertEquals(TaskId("some-id"), context.requestTask.id)
     }
 
     @Test
@@ -34,8 +37,8 @@ internal class MapperTest {
 
         context.setQuery(requestDemand)
 
-        assertEquals("some name", context.requestTask.task.name)
-        assertEquals("some description", context.requestTask.task.description)
+        assertEquals(Name("some name"), context.requestTask.name)
+        assertEquals(Description("some description"), context.requestTask.description)
 
     }
 }

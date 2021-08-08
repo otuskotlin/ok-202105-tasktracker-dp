@@ -43,7 +43,7 @@ sourceSets {
         java.srcDirs("$buildDir/generate-resources/main/src/main/kotlin")
     }
     test {
-        java.srcDirs("$buildDir/generate-resources/main/src/main/kotlin")
+        java.srcDirs("$buildDir/generate-resources/main/src/test/kotlin")
     }
 }
 

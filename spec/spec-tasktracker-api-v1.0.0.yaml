@@ -12,26 +12,8 @@ tags:
   - name: task
     description: This is the main CRUD of the application which provides everything related to task entity
 paths:
-  /task/all:
-    post:
-      tags:
-        - task listing
-      summary: list of all current tasks available
-      operationId: listAllTasks
-      requestBody:
-        description: holds nothing particular except basic constructs
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListAllTasksRequest'
-      responses:
-        200:
-          description: holds list of all tasks
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListAllTasksResponse'
   /task/create:
+    description: creating new task in task tracker
     post:
       tags:
         - task creating
@@ -52,9 +34,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateTaskResponse'
   /tasks/read:
+    description: reading task by id
     post:
       tags:
-        - tasks read
+        - tasks reading
       summary: reading task by id
       operationId: getTaskWithId
       requestBody:
@@ -72,9 +55,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReadTaskResponse'
   /task/update:
+    description: updating task fields with new values
     post:
       tags:
-        - task update
+        - task updating
       summary: update properties of the task given task
       operationId: updateTask
       requestBody:
@@ -92,9 +76,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UpdateTaskResponse'
   /task/delete:
+    description: deleting task by id
     post:
       tags:
-        - task delete
+        - task deleting
       summary: delete task by given id
       operationId: deleteTask
       requestBody:
@@ -111,11 +96,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteTaskResponse'
-
+  /task/search:
+    description: searching tasks by one or more filters provided
+    post:
+      tags:
+        - task searching
+      summary: list of all current tasks available with filters
+      operationId: searchTasks
+      requestBody:
+        description: may hold filter
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchTasksRequest'
+      responses:
+        200:
+          description: holds list of tasks with filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchTasksResponse'
 components:
   schemas:
 
     BaseMessage:
+      description: is needed for inheritance between requests and responses of all kinds
       type: object
       properties:
         messageType:
@@ -124,6 +129,7 @@ components:
         propertyName: messageType
 
     BaseRequest:
+      description: contains everything that is needed for any request of any kind
       type: object
       properties:
         requestId:
@@ -132,36 +138,17 @@ components:
           $ref: '#/components/schemas/Debug'
 
     BaseResponse:
+      description: contains everything that is needed for any response of any kind
       type: object
       properties:
         responseId:
           type: string
         result:
-          type: string
-          enum:
-            - success
-            - error
+          $ref: '#/components/schemas/Result'
         errors:
           type: array
           items:
             $ref: '#/components/schemas/ApiError'
-
-    ListAllTasksRequest:
-      allOf:
-        - $ref: '#/components/schemas/BaseMessage'
-        - $ref: '#/components/schemas/BaseRequest'
-        - type: object
-
-    ListAllTasksResponse:
-      allOf:
-        - $ref: '#/components/schemas/BaseMessage'
-        - $ref: '#/components/schemas/BaseResponse'
-        - type: object
-          properties:
-            availableTasks:
-              type: array
-              items:
-                $ref: '#/components/schemas/UpdatableTask'
 
     CreateTaskRequest:
       allOf:
@@ -171,15 +158,6 @@ components:
           properties:
             createTask:
               $ref: '#/components/schemas/CreatableTask'
-            debug:
-              type: object
-              properties:
-                stub:
-                  type: string
-                  enum:
-                    - success
-                    - nameEmpty
-                    - errorDb
 
     CreateTaskResponse:
       allOf:
@@ -241,8 +219,33 @@ components:
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
-            id:
-              type: string
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    SearchTasksRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            searchFilter:
+              $ref: '#/components/schemas/SearchFilter'
+
+    SearchTasksResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            availableTasks:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatableTask'
+
+    Result:
+      description: substitutes 200 and any other http responses with simple enum in body response
+      type: string
+      enum: [ success, error ]
 
     ApiError:
       type: object
@@ -253,27 +256,97 @@ components:
           type: string
 
     Debug:
+      description: represents the mode of API functionality and allows API user to test backend with some testdata
       type: object
       properties:
         mode:
           type: string
-          default:
-            prod
+          default: 'prod'
+          enum: [prod, test]
         stub:
+          description: if mode is set to prod any value of stub except none will be ignored
           type: string
+          enum: [none, success, errorDb]
 
     CreatableTask:
+      description: represents every task with all its business logic related properties
       type: object
       properties:
         name:
           type: string
         description:
           type: string
+        attainabilityDescription:
+          type: string
+        relevanceDescription:
+          type: string
+        measurability:
+          $ref: '#/components/schemas/Measurability'
+        dueTime:
+          type: string
+          format: date-time
+        parent:
+          $ref: '#/components/schemas/CreatableTask'
+          nullable: true
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreatableTask'
+            nullable: true
+      required:
+        - name
 
     UpdatableTask:
+      description: represents every task that is already given its id on backend
       allOf:
         - $ref: '#/components/schemas/CreatableTask'
         - type: object
           properties:
             id:
               type: string
+      required:
+        - id
+
+    SearchFilter:
+      description: is used in search request to filter the response
+      type: object
+      properties:
+        nameFilter:
+          type: string
+        descriptionFilter:
+          type: string
+        attainabilityDescriptionFilter:
+          type: string
+        relevanceDescriptionFilter:
+          type: string
+        measurabilityDescriptionFilter:
+          type: string
+        progressMarkFilter:
+          type: integer
+        progressMarkFilterEquality:
+          $ref: '#/components/schemas/EqualityMode'
+        dueTimeFilter:
+          type: string
+          format: date-time
+        dueTimeFilterEquality:
+          $ref: '#/components/schemas/EqualityMode'
+        prentIdFilter:
+          type: string
+        childIdFilter:
+          type: string
+
+    EqualityMode:
+      description: enumeration that represents the desired filtering action regarding some particular property of comparable type or none to ignore the value
+      type: string
+      enum: [ none, lessThan, moreThan, equals ]
+
+    Measurability:
+      description: contains description of what exactly we count and percent counter of task completeness
+      type: object
+      properties:
+        description:
+          type: string
+        progressMark:
+          type: integer
+          minimum: 0
+          maximum: 100
