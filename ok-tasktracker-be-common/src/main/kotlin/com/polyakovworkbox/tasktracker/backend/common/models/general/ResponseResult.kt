@@ -1,5 +1,5 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.general
 
-enum class Result {
+enum class ResponseResult {
     SUCCESS, ERROR
 }

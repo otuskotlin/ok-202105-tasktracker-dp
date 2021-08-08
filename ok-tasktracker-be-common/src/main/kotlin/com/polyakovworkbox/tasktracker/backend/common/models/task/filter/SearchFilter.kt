@@ -6,6 +6,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
+import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 
 class SearchFilter(
     var nameFilter: Name = Name.NONE,
@@ -17,8 +18,8 @@ class SearchFilter(
     var progressMarkFilterEquality: EqualityMode = EqualityMode.NONE,
     var dueTimeFilter: DueTime = DueTime.NONE,
     var dueTimeFilterEquality: EqualityMode = EqualityMode.NONE,
-    var prentIdFilter: TaskId = TaskId.NONE,
-    val childIdFilter: TaskId = TaskId.NONE
+    var parentIdFilter: TaskIdReference = TaskIdReference.NONE,
+    var childIdFilter: TaskIdReference = TaskIdReference.NONE
 ) {
     companion object {
         val ALL = SearchFilter()

@@ -8,8 +8,8 @@ class Task(
     var relevanceDescription: Description = Description.NONE,
     var measurability: Measurability = Measurability.NONE,
     var dueTime: DueTime = DueTime.NONE,
-    var parent: TaskId = TaskId.NONE,
-    var children: List<TaskId> = emptyList()
+    var parent: TaskIdReference = TaskIdReference.NONE,
+    var children: List<TaskIdReference> = emptyList()
 ) {
     companion object {
         val NONE = Task()

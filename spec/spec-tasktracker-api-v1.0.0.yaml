@@ -144,11 +144,13 @@ components:
         responseId:
           type: string
         result:
-          $ref: '#/components/schemas/Result'
+          $ref: '#/components/schemas/ResponseResult'
         errors:
           type: array
           items:
             $ref: '#/components/schemas/ApiError'
+      required:
+        - responseId
 
     CreateTaskRequest:
       allOf:
@@ -156,7 +158,7 @@ components:
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
-            createTask:
+            task:
               $ref: '#/components/schemas/CreatableTask'
 
     CreateTaskResponse:
@@ -165,7 +167,7 @@ components:
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
-            createdTask:
+            task:
               $ref: '#/components/schemas/UpdatableTask'
 
     ReadTaskRequest:
@@ -242,7 +244,7 @@ components:
               items:
                 $ref: '#/components/schemas/UpdatableTask'
 
-    Result:
+    ResponseResult:
       description: substitutes 200 and any other http responses with simple enum in body response
       type: string
       enum: [ success, error ]
@@ -286,13 +288,12 @@ components:
           type: string
           format: date-time
         parent:
-          $ref: '#/components/schemas/CreatableTask'
+          type: string
           nullable: true
         children:
           type: array
           items:
-            $ref: '#/components/schemas/CreatableTask'
-            nullable: true
+            type: string
       required:
         - name
 
