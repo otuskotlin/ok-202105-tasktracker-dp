@@ -21,7 +21,7 @@ fun BeContext.toCreateResponse() = CreateTaskResponse(
     messageType = CreateTaskResponse::class.java.simpleName,
     result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = this.errors.mapErrorsToTransport(),
-    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else UpdatableTask()
+    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
 )
 
 fun BeContext.toReadResponse() = ReadTaskResponse(
@@ -29,7 +29,7 @@ fun BeContext.toReadResponse() = ReadTaskResponse(
     messageType = ReadTaskResponse::class.java.simpleName,
     result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = this.errors.mapErrorsToTransport(),
-    task = this.responseTask.mapToTransport()
+    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
 )
 
 fun BeContext.toUpdateResponse() = UpdateTaskResponse(
@@ -37,7 +37,7 @@ fun BeContext.toUpdateResponse() = UpdateTaskResponse(
     messageType = UpdateTaskResponse::class.java.simpleName,
     result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = this.errors.mapErrorsToTransport(),
-    task = this.responseTask.mapToTransport()
+    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
 )
 
 fun BeContext.toDeleteResponse() = DeleteTaskResponse(
@@ -45,7 +45,7 @@ fun BeContext.toDeleteResponse() = DeleteTaskResponse(
     messageType = DeleteTaskResponse::class.java.simpleName,
     result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = this.errors.mapErrorsToTransport(),
-    task = this.responseTask.mapToTransport()
+    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
 )
 
 fun BeContext.toSearchResponse() = SearchTasksResponse(
@@ -53,7 +53,7 @@ fun BeContext.toSearchResponse() = SearchTasksResponse(
     messageType = SearchTasksResponse::class.java.simpleName,
     result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = this.errors.mapErrorsToTransport(),
-    availableTasks = this.responseTasks.mapTasksToTransport()
+    availableTasks = if(errors.isEmpty()) this.responseTasks.mapTasksToTransport() else null
 )
 
 private fun MutableList<TaskDomain>.mapTasksToTransport(): List<UpdatableTask> =

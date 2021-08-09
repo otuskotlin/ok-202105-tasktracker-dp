@@ -1,6 +1,6 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.general
 
-class Debug(
+data class Debug(
     var mode: Mode = Mode.PROD,
     var stub: Stub = Stub.NONE
 ) {

@@ -1,6 +1,6 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.task
 
-class Task(
+data class Task(
     var id: TaskId = TaskId.NONE,
     var name: Name = Name.NONE,
     var description: Description = Description.NONE,

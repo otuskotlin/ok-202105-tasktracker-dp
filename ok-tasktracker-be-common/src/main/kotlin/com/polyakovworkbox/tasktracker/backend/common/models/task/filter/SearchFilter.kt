@@ -8,7 +8,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 
-class SearchFilter(
+data class SearchFilter(
     var nameFilter: Name = Name.NONE,
     var descriptionFilter: Description = Description.NONE,
     var attainabilityDescriptionFilter: Description = Description.NONE,

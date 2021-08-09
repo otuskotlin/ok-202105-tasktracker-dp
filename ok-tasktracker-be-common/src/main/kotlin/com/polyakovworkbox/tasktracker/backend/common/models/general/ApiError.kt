@@ -1,6 +1,6 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.general
 
-class ApiError(
+data class ApiError(
     var field: String = "",
     var message: String = ""
 ) {

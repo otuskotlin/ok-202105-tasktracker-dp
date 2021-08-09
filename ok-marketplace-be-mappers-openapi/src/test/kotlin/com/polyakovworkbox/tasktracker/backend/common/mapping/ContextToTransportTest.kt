@@ -30,6 +30,13 @@ class ContextToTransportTest {
         }
 
         val createResponse = context.toCreateResponse()
+
+        assertEquals("responseId", createResponse.responseId)
+        assertEquals(null, createResponse.task)
+        assertEquals("field-id-1", createResponse.errors?.get(0)?.field)
+        assertEquals("error-message-1", createResponse.errors?.get(0)?.message)
+        assertEquals("field-id-2", createResponse.errors?.get(1)?.field)
+        assertEquals("error-message-2", createResponse.errors?.get(1)?.message)
     }
 
     @Test

@@ -63,6 +63,7 @@ private fun RequestId.mapFrom(requestId: String?) : RequestId =
 
 fun DebugDomain.mapFrom(from: Debug?) : DebugDomain {
     val mode = from?.mode?.name
+
     return if (mode == null) {
         DebugDomain.DEFAULT
     } else {

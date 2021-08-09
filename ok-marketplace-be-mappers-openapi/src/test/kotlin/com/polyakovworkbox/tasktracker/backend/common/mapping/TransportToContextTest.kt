@@ -16,7 +16,6 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability as MeasurabilityDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task as TaskDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode as EqualityModeDomain
-import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 import java.time.LocalDateTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter as SearchFilterDomain
 import kotlin.test.Test
@@ -79,8 +78,8 @@ internal class TransportToContextTest {
         val request = CreateTaskRequest(
                 requestId = "request-id",
                 task = CreatableTask(
-                        name = "some-name",
-                        description = "some-description"
+                    name = "some-name",
+                    description = "some-description"
                 )
         )
 
@@ -171,7 +170,8 @@ internal class TransportToContextTest {
         assertEquals(MeasurabilityDomain.NONE, mappedTask.measurability)
         assertEquals(DueTime.NONE, mappedTask.dueTime)
         assertEquals("parent-task-id", mappedTask.parent.id)
-        assertEquals(listOf(TaskIdReference("child-task-id-1"), TaskIdReference("child-task-id-2")), mappedTask.children)
+        assertEquals("child-task-id-1", mappedTask.children[0].id)
+        assertEquals("child-task-id-2", mappedTask.children[1].id)
     }
 
     @Test
@@ -198,7 +198,8 @@ internal class TransportToContextTest {
         assertEquals(MeasurabilityDomain.NONE, mappedTask.measurability)
         assertEquals(DueTime.NONE, mappedTask.dueTime)
         assertEquals("parent-task-id", mappedTask.parent.id)
-        assertEquals(listOf(TaskIdReference("child-task-id-1"), TaskIdReference("child-task-id-2")), mappedTask.children)
+        assertEquals("child-task-id-1", mappedTask.children[0].id)
+        assertEquals("child-task-id-2", mappedTask.children[1].id)
     }
 
     @Test
