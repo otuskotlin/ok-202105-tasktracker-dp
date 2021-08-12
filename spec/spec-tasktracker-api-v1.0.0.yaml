@@ -1,0 +1,353 @@
+openapi: 3.0.3
+info:
+  title: Tasktracker
+  description: this API allows to manage user tasks in tasktracker application
+  version: 1.0.0
+externalDocs:
+  description: No particular doc currently except for github repo README
+  url: https://github.com/otuskotlin/ok-202105-tasktracker-dp/blob/main/README.md
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: task
+    description: This is the main CRUD of the application which provides everything related to task entity
+paths:
+  /task/create:
+    description: creating new task in task tracker
+    post:
+      tags:
+        - task creating
+      summary: create a new task
+      operationId: createNewTask
+      requestBody:
+        description: holds new task name and decription
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+        required: true
+      responses:
+        200:
+          description: holds success or failure info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskResponse'
+  /tasks/read:
+    description: reading task by id
+    post:
+      tags:
+        - tasks reading
+      summary: reading task by id
+      operationId: getTaskWithId
+      requestBody:
+        description: must provide the id of task
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadTaskRequest'
+        required: true
+      responses:
+        200:
+          description: holds the task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadTaskResponse'
+  /task/update:
+    description: updating task fields with new values
+    post:
+      tags:
+        - task updating
+      summary: update properties of the task given task
+      operationId: updateTask
+      requestBody:
+        description: must provide the task to update with new fields state
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+        required: true
+      responses:
+        200:
+          description: shows that the update is completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTaskResponse'
+  /task/delete:
+    description: deleting task by id
+    post:
+      tags:
+        - task deleting
+      summary: delete task by given id
+      operationId: deleteTask
+      requestBody:
+        description: must provide task id to delete
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTaskRequest'
+        required: true
+      responses:
+        200:
+          description: returns id of deleted task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteTaskResponse'
+  /task/search:
+    description: searching tasks by one or more filters provided
+    post:
+      tags:
+        - task searching
+      summary: list of all current tasks available with filters
+      operationId: searchTasks
+      requestBody:
+        description: may hold filter
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchTasksRequest'
+      responses:
+        200:
+          description: holds list of tasks with filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchTasksResponse'
+components:
+  schemas:
+
+    BaseMessage:
+      description: is needed for inheritance between requests and responses of all kinds
+      type: object
+      properties:
+        messageType:
+          type: string
+      discriminator:
+        propertyName: messageType
+
+    BaseRequest:
+      description: contains everything that is needed for any request of any kind
+      type: object
+      properties:
+        requestId:
+          type: string
+        debug:
+          $ref: '#/components/schemas/Debug'
+
+    BaseResponse:
+      description: contains everything that is needed for any response of any kind
+      type: object
+      properties:
+        responseId:
+          type: string
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiError'
+      required:
+        - responseId
+
+    CreateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/CreatableTask'
+
+    CreateTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    ReadTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    ReadTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    UpdateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    UpdateTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    DeleteTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    DeleteTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/UpdatableTask'
+
+    SearchTasksRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            searchFilter:
+              $ref: '#/components/schemas/SearchFilter'
+
+    SearchTasksResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            availableTasks:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatableTask'
+
+    ResponseResult:
+      description: substitutes 200 and any other http responses with simple enum in body response
+      type: string
+      enum: [ success, error ]
+
+    ApiError:
+      type: object
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+
+    Debug:
+      description: represents the mode of API functionality and allows API user to test backend with some testdata
+      type: object
+      properties:
+        mode:
+          type: string
+          default: 'prod'
+          enum: [prod, test]
+        stub:
+          description: if mode is set to prod any value of stub except none will be ignored
+          type: string
+          enum: [none, success, errorDb]
+
+    CreatableTask:
+      description: represents every task with all its business logic related properties
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        attainabilityDescription:
+          type: string
+        relevanceDescription:
+          type: string
+        measurability:
+          $ref: '#/components/schemas/Measurability'
+        dueTime:
+          type: string
+          format: date-time
+        parent:
+          type: string
+          nullable: true
+        children:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+
+    UpdatableTask:
+      description: represents every task that is already given its id on backend
+      allOf:
+        - $ref: '#/components/schemas/CreatableTask'
+        - type: object
+          properties:
+            id:
+              type: string
+      required:
+        - id
+
+    SearchFilter:
+      description: is used in search request to filter the response
+      type: object
+      properties:
+        nameFilter:
+          type: string
+        descriptionFilter:
+          type: string
+        attainabilityDescriptionFilter:
+          type: string
+        relevanceDescriptionFilter:
+          type: string
+        measurabilityDescriptionFilter:
+          type: string
+        progressMarkFilter:
+          type: integer
+        progressMarkFilterEquality:
+          $ref: '#/components/schemas/EqualityMode'
+        dueTimeFilter:
+          type: string
+          format: date-time
+        dueTimeFilterEquality:
+          $ref: '#/components/schemas/EqualityMode'
+        prentIdFilter:
+          type: string
+        childIdFilter:
+          type: string
+
+    EqualityMode:
+      description: enumeration that represents the desired filtering action regarding some particular property of comparable type or none to ignore the value
+      type: string
+      enum: [ none, lessThan, moreThan, equals ]
+
+    Measurability:
+      description: contains description of what exactly we count and percent counter of task completeness
+      type: object
+      properties:
+        description:
+          type: string
+        progressMark:
+          type: integer
+          minimum: 0
+          maximum: 100
