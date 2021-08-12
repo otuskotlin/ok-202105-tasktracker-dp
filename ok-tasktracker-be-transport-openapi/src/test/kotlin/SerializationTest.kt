@@ -4,7 +4,7 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchFilter
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchTasksRequest
-import java.time.LocalDateTime
+import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -31,7 +31,7 @@ internal class SerializationTest {
 
     @Test
     fun `date time serialization test`() {
-        val dateTimeNow = LocalDateTime.now().toString()
+        val dateTimeNow = Instant.now().toString()
         val mapper = ObjectMapper()
         val obj = SearchTasksRequest(searchFilter = SearchFilter(dueTimeFilter = dateTimeNow))
         val jsonStr = mapper.writeValueAsString(obj)

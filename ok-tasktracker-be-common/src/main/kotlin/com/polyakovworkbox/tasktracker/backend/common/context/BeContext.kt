@@ -12,10 +12,11 @@ data class BeContext(
     var requestId: RequestId = RequestId.NONE,
     var debug: Debug = Debug.DEFAULT,
 
-    var requestTask: Task = Task.NONE,
+    var requestTask: Task = Task(),
     var requestTaskId: TaskId = TaskId.NONE,
-    var searchFilter: SearchFilter = SearchFilter.ALL,
-    var responseTask: Task = Task.NONE,
+    var status: ResponseStatus = ResponseStatus.SUCCESS,
+    var searchFilter: SearchFilter = SearchFilter(),
+    var responseTask: Task = Task(),
     var responseTasks: MutableList<Task> = mutableListOf(),
 
     var responseId: ResponseId = ResponseId.NONE,

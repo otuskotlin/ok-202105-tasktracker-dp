@@ -13,10 +13,10 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskRequest
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
+import java.time.Instant
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability as MeasurabilityDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task as TaskDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode as EqualityModeDomain
-import java.time.LocalDateTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter as SearchFilterDomain
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -145,7 +145,7 @@ internal class TransportToContextTest {
         val context = BeContext().mapRequest(request)
 
         assertEquals("request-id", context.requestId.id)
-        assertEquals(SearchFilterDomain.ALL, context.searchFilter)
+        assertEquals(SearchFilterDomain(), context.searchFilter)
     }
 
     @Test
@@ -167,7 +167,7 @@ internal class TransportToContextTest {
         assertEquals("some-description", mappedTask.description.description)
         assertEquals("some-attainability-description", mappedTask.attainabilityDescription.description)
         assertEquals("some-relevance-description", mappedTask.relevanceDescription.description)
-        assertEquals(MeasurabilityDomain.NONE, mappedTask.measurability)
+        assertEquals(MeasurabilityDomain(), mappedTask.measurability)
         assertEquals(DueTime.NONE, mappedTask.dueTime)
         assertEquals("parent-task-id", mappedTask.parent.id)
         assertEquals("child-task-id-1", mappedTask.children[0].id)
@@ -195,7 +195,7 @@ internal class TransportToContextTest {
         assertEquals("some-description", mappedTask.description.description)
         assertEquals("some-attainability-description", mappedTask.attainabilityDescription.description)
         assertEquals("some-relevance-description", mappedTask.relevanceDescription.description)
-        assertEquals(MeasurabilityDomain.NONE, mappedTask.measurability)
+        assertEquals(MeasurabilityDomain(), mappedTask.measurability)
         assertEquals(DueTime.NONE, mappedTask.dueTime)
         assertEquals("parent-task-id", mappedTask.parent.id)
         assertEquals("child-task-id-1", mappedTask.children[0].id)
@@ -204,11 +204,11 @@ internal class TransportToContextTest {
 
     @Test
     fun `due time mapping`() {
-        val timeNow = LocalDateTime.now().toString()
+        val timeNow = Instant.now().toString()
 
         val mappedDueTime = DueTime().mapFrom(timeNow)
 
-        assertEquals(mappedDueTime.dueTime, LocalDateTime.parse(timeNow))
+        assertEquals(mappedDueTime.dueTime, Instant.parse(timeNow))
     }
 
     @Test

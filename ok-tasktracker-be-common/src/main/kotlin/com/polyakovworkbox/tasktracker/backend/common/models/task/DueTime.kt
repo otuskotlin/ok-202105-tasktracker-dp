@@ -1,10 +1,10 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.task
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 @JvmInline
 value class DueTime(
-    val dueTime: LocalDateTime = LocalDateTime.now()
+    val dueTime: Instant = Instant.now()
 ) {
     companion object {
         val NONE = DueTime()

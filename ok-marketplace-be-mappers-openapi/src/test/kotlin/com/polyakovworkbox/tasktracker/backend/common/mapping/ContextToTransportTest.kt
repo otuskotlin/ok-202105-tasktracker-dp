@@ -13,7 +13,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 import org.junit.Test
-import java.time.LocalDateTime
+import java.time.Instant
 import kotlin.test.assertEquals
 
 class ContextToTransportTest {
@@ -121,7 +121,7 @@ class ContextToTransportTest {
 
     @Test
     fun `map task`() {
-        val currentDateTime = LocalDateTime.now()
+        val currentDateTime = Instant.now()
         val task = Task(
             id = TaskId("task-id"),
             name = Name("task-name"),

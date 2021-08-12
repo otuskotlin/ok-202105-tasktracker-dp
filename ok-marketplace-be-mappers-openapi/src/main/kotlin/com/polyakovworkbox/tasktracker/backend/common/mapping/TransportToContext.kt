@@ -4,6 +4,7 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.Debug
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.DeleteTaskRequest
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.EqualityMode
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.Measurability
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchFilter
@@ -11,7 +12,6 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdatableTask
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskRequest
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
-import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Mode
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Percent
 import com.polyakovworkbox.tasktracker.backend.common.models.general.RequestId
@@ -25,54 +25,65 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter as SearchFilterDomain
+import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode as EqualityModeDomain
 import java.lang.IllegalArgumentException
-import java.time.LocalDateTime
+import java.time.Instant
 
 fun BeContext.mapRequest(request: CreateTaskRequest) = apply {
-    this.requestId = this.requestId.mapFrom(request.requestId)
-    this.debug = this.debug.mapFrom(request.debug)
-    this.requestTask = this.requestTask.mapFrom(request.task)
+    requestId = requestId.mapFrom(request.requestId)
+    debug = debug.mapFrom(request.debug)
+    requestTask = requestTask.mapFrom(request.task)
 }
 
 fun BeContext.mapRequest(request: ReadTaskRequest) = apply {
-    this.requestId = this.requestId.mapFrom(request.requestId)
-    this.debug = this.debug.mapFrom(request.debug)
-    this.requestTaskId = this.requestTask.id.mapFrom(request.id)
+    requestId = requestId.mapFrom(request.requestId)
+    debug = debug.mapFrom(request.debug)
+    requestTaskId = requestTask.id.mapFrom(request.id)
 }
 
 fun BeContext.mapRequest(request: UpdateTaskRequest) = apply {
-    this.requestId = this.requestId.mapFrom(request.requestId)
-    this.debug = this.debug.mapFrom(request.debug)
-    this.requestTask = this.requestTask.mapFrom(request.task)
+    requestId = requestId.mapFrom(request.requestId)
+    debug = debug.mapFrom(request.debug)
+    requestTask = requestTask.mapFrom(request.task)
 }
 
 fun BeContext.mapRequest(request: DeleteTaskRequest) = apply {
-    this.requestId = this.requestId.mapFrom(request.requestId)
-    this.debug = this.debug.mapFrom(request.debug)
-    this.requestTaskId = this.requestTaskId.mapFrom(request.id)
+    requestId = requestId.mapFrom(request.requestId)
+    debug = debug.mapFrom(request.debug)
+    requestTaskId = requestTaskId.mapFrom(request.id)
 }
 
 fun BeContext.mapRequest(request: SearchTasksRequest) = apply {
-    this.requestId = this.requestId.mapFrom(request.requestId)
-    this.debug = this.debug.mapFrom(request.debug)
-    this.searchFilter = this.searchFilter.mapFrom(request.searchFilter)
+    requestId = requestId.mapFrom(request.requestId)
+    debug = debug.mapFrom(request.debug)
+    searchFilter = searchFilter.mapFrom(request.searchFilter)
 }
 
 private fun RequestId.mapFrom(requestId: String?) : RequestId =
     RequestId(requestId ?: throw IllegalArgumentException())
 
 fun DebugDomain.mapFrom(from: Debug?) : DebugDomain {
-    val mode = from?.mode?.name
+    val mode = from?.mode
 
     return if (mode == null) {
         DebugDomain.DEFAULT
     } else {
-        val validatedMode = Mode.valueOf(mode)
-        val stub = Stub.valueOf(from.stub?.name ?: "NONE")
+        val validatedMode =
+            when (mode) {
+                Debug.Mode.PROD -> Mode.PROD
+                Debug.Mode.TEST -> Mode.TEST
+            }
+        val validatedStub =
+            when (from.stub) {
+                null -> Stub.NONE
+                Debug.Stub.NONE -> Stub.NONE
+                Debug.Stub.SUCCESS -> Stub.SUCCESS
+                Debug.Stub.ERROR_DB -> Stub.ERROR_DB
+            }
         if (validatedMode == Mode.PROD) {
             DebugDomain(validatedMode, Stub.NONE)
         } else {
-            DebugDomain(validatedMode, stub)
+            DebugDomain(validatedMode, validatedStub)
         }
     }
 }
@@ -80,14 +91,14 @@ fun DebugDomain.mapFrom(from: Debug?) : DebugDomain {
 fun Task.mapFrom(task: CreatableTask?) : Task {
     if(task == null) throw IllegalArgumentException()
 
-    this.name = this.name.mapFrom(task.name)
-    this.description = this.description.mapFrom(task.description)
-    this.attainabilityDescription = this.attainabilityDescription.mapFrom(task.attainabilityDescription)
-    this.relevanceDescription = this.relevanceDescription.mapFrom(task.relevanceDescription)
-    this.dueTime = this.dueTime.mapFrom(task.dueTime)
-    this.measurability = this.measurability.mapFrom(task.measurability)
-    this.parent = this.parent.mapFrom(task.parent)
-    this.children = this.children.mapFrom(task.children)
+    name = name.mapFrom(task.name)
+    description = description.mapFrom(task.description)
+    attainabilityDescription = attainabilityDescription.mapFrom(task.attainabilityDescription)
+    relevanceDescription = relevanceDescription.mapFrom(task.relevanceDescription)
+    dueTime = dueTime.mapFrom(task.dueTime)
+    measurability = measurability.mapFrom(task.measurability)
+    parent = parent.mapFrom(task.parent)
+    children = children.mapFrom(task.children)
 
     return this
 }
@@ -95,15 +106,15 @@ fun Task.mapFrom(task: CreatableTask?) : Task {
 fun Task.mapFrom(task: UpdatableTask?) : Task {
     if(task == null) throw IllegalArgumentException()
 
-    this.id = this.id.mapFrom(task.id)
-    this.name = this.name.mapFrom(task.name)
-    this.description = this.description.mapFrom(task.description)
-    this.attainabilityDescription = this.attainabilityDescription.mapFrom(task.attainabilityDescription)
-    this.relevanceDescription = this.relevanceDescription.mapFrom(task.relevanceDescription)
-    this.dueTime = this.dueTime.mapFrom(task.dueTime)
-    this.measurability = this.measurability.mapFrom(task.measurability)
-    this.parent = this.parent.mapFrom(task.parent)
-    this.children = this.children.mapFrom(task.children)
+    id = id.mapFrom(task.id)
+    name = name.mapFrom(task.name)
+    description = description.mapFrom(task.description)
+    attainabilityDescription = attainabilityDescription.mapFrom(task.attainabilityDescription)
+    relevanceDescription = relevanceDescription.mapFrom(task.relevanceDescription)
+    dueTime = dueTime.mapFrom(task.dueTime)
+    measurability = measurability.mapFrom(task.measurability)
+    parent = parent.mapFrom(task.parent)
+    children = children.mapFrom(task.children)
 
     return this
 }
@@ -111,32 +122,19 @@ fun Task.mapFrom(task: UpdatableTask?) : Task {
 fun SearchFilterDomain.mapFrom(searchFilter: SearchFilter?) : SearchFilterDomain {
     if(searchFilter == null) throw IllegalArgumentException()
 
-    this.nameFilter = this.nameFilter.mapFrom(searchFilter.nameFilter)
-    this.descriptionFilter = this.descriptionFilter.mapFrom(searchFilter.descriptionFilter)
-    this.attainabilityDescriptionFilter = this.attainabilityDescriptionFilter.mapFrom(searchFilter.attainabilityDescriptionFilter)
-    this.relevanceDescriptionFilter = this.relevanceDescriptionFilter.mapFrom(searchFilter.relevanceDescriptionFilter)
-    this.dueTimeFilter = this.dueTimeFilter.mapFrom(searchFilter.dueTimeFilter)
-    this.dueTimeFilterEquality = this.dueTimeFilterEquality.mapFrom(searchFilter.dueTimeFilterEquality?.name)
-    this.measurabilityDescriptionFilter = this.measurabilityDescriptionFilter.mapFrom(searchFilter.measurabilityDescriptionFilter)
-    this.progressMarkFilter = this.progressMarkFilter.mapFrom(searchFilter.progressMarkFilter)
-    this.progressMarkFilterEquality = this.progressMarkFilterEquality.mapFrom(searchFilter.progressMarkFilterEquality?.name)
-    this.parentIdFilter = this.parentIdFilter.mapFrom(searchFilter.prentIdFilter)
-    this.childIdFilter = this.childIdFilter.mapFrom(searchFilter.childIdFilter)
+    nameFilter = nameFilter.mapFrom(searchFilter.nameFilter)
+    descriptionFilter = descriptionFilter.mapFrom(searchFilter.descriptionFilter)
+    attainabilityDescriptionFilter = attainabilityDescriptionFilter.mapFrom(searchFilter.attainabilityDescriptionFilter)
+    relevanceDescriptionFilter = relevanceDescriptionFilter.mapFrom(searchFilter.relevanceDescriptionFilter)
+    dueTimeFilter = dueTimeFilter.mapFrom(searchFilter.dueTimeFilter)
+    dueTimeFilterEquality = dueTimeFilterEquality.mapFrom(searchFilter.dueTimeFilterEquality)
+    measurabilityDescriptionFilter = measurabilityDescriptionFilter.mapFrom(searchFilter.measurabilityDescriptionFilter)
+    progressMarkFilter = progressMarkFilter.mapFrom(searchFilter.progressMarkFilter)
+    progressMarkFilterEquality = progressMarkFilterEquality.mapFrom(searchFilter.progressMarkFilterEquality)
+    parentIdFilter = parentIdFilter.mapFrom(searchFilter.prentIdFilter)
+    childIdFilter = childIdFilter.mapFrom(searchFilter.childIdFilter)
 
-    return if (
-        this.nameFilter == Name.NONE
-        && this.descriptionFilter == Description.NONE
-        && this.attainabilityDescriptionFilter == Description.NONE
-        && this.relevanceDescriptionFilter == Description.NONE
-        && this.dueTimeFilter == DueTimeDomain.NONE
-        && this.measurabilityDescriptionFilter == Description.NONE
-        && this.progressMarkFilter == Percent.NONE
-        && this.parentIdFilter == TaskIdReference.NONE
-        && this.childIdFilter == TaskIdReference.NONE
-    ) {
-        SearchFilterDomain.ALL
-    } else
-        this
+    return this
 }
 
 private fun List<TaskIdReference>.mapFrom(children: List<String>?) : List<TaskIdReference> =
@@ -153,15 +151,15 @@ private fun TaskIdReference.mapFrom(id: String?) : TaskIdReference =
 
 fun MeasurabilityDomain.mapFrom(measurability: Measurability?) : MeasurabilityDomain =
     if (measurability == null)
-        MeasurabilityDomain.NONE
+        MeasurabilityDomain()
     else
         MeasurabilityDomain(
-            this.description.mapFrom(measurability.description),
-            this.progress.mapFrom(measurability.progressMark)
+            description.mapFrom(measurability.description),
+            progress.mapFrom(measurability.progressMark)
         )
 
 fun DueTimeDomain.mapFrom(dueTime: String?) : DueTimeDomain =
-    if (dueTime == null) DueTimeDomain.NONE else DueTimeDomain(LocalDateTime.parse(dueTime))
+    if (dueTime == null) DueTimeDomain.NONE else DueTimeDomain(Instant.parse(dueTime))
 
 fun Description.mapFrom(description: String?) : Description =
     if (description == null) Description.NONE else Description(description)
@@ -172,7 +170,13 @@ fun Percent.mapFrom(progressMark: Int?) : Percent =
 fun Name.mapFrom(name: String?) : Name =
     if (name == null) Name.NONE else Name(name)
 
-fun EqualityMode.mapFrom(equalityMode: String?) : EqualityMode =
-    if(equalityMode == null) EqualityMode.NONE else EqualityMode.valueOf(equalityMode)
+fun EqualityModeDomain.mapFrom(equalityMode: EqualityMode?) : EqualityModeDomain =
+    when (equalityMode) {
+        null -> EqualityModeDomain.NONE
+        EqualityMode.NONE -> EqualityModeDomain.NONE
+        EqualityMode.MORE_THAN -> EqualityModeDomain.MORE_THAN
+        EqualityMode.LESS_THAN -> EqualityModeDomain.LESS_THAN
+        EqualityMode.EQUALS -> EqualityModeDomain.EQUALS
+    }
 
 

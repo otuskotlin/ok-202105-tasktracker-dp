@@ -6,12 +6,8 @@ data class Task(
     var description: Description = Description.NONE,
     var attainabilityDescription: Description = Description.NONE,
     var relevanceDescription: Description = Description.NONE,
-    var measurability: Measurability = Measurability.NONE,
+    var measurability: Measurability = Measurability(),
     var dueTime: DueTime = DueTime.NONE,
     var parent: TaskIdReference = TaskIdReference.NONE,
     var children: List<TaskIdReference> = emptyList()
-) {
-    companion object {
-        val NONE = Task()
-    }
-}
+)

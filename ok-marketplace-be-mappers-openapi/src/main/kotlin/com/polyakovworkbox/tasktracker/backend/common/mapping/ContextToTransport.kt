@@ -10,6 +10,8 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchTasksResponse
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
+import com.polyakovworkbox.tasktracker.backend.common.context.ResponseStatus
+import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError as DomainApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task as TaskDomain
@@ -17,75 +19,89 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability 
 
 
 fun BeContext.toCreateResponse() = CreateTaskResponse(
-    responseId = this.responseId.id,
+    responseId = responseId.id,
     messageType = CreateTaskResponse::class.java.simpleName,
-    result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.mapErrorsToTransport(),
-    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
+    result =
+    if(errors.isEmpty() && status != ResponseStatus.ERROR)
+        ResponseResult.SUCCESS
+    else ResponseResult.ERROR,
+    errors = errors.mapErrorsToTransport(),
+    task = responseTask.takeIf { errors.isEmpty() }?.mapToTransport()
 )
 
 fun BeContext.toReadResponse() = ReadTaskResponse(
-    responseId = this.responseId.id,
+    responseId = responseId.id,
     messageType = ReadTaskResponse::class.java.simpleName,
-    result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.mapErrorsToTransport(),
-    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
+    result =
+    if(errors.isEmpty() && status != ResponseStatus.ERROR)
+        ResponseResult.SUCCESS
+    else ResponseResult.ERROR,
+    errors = errors.mapErrorsToTransport(),
+    task = responseTask.takeIf { errors.isEmpty() }?.mapToTransport()
 )
 
 fun BeContext.toUpdateResponse() = UpdateTaskResponse(
-    responseId = this.responseId.id,
+    responseId = responseId.id,
     messageType = UpdateTaskResponse::class.java.simpleName,
-    result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.mapErrorsToTransport(),
-    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
+    result =
+    if(errors.isEmpty() && status != ResponseStatus.ERROR)
+        ResponseResult.SUCCESS
+    else ResponseResult.ERROR,
+    errors = errors.mapErrorsToTransport(),
+    task = responseTask.takeIf { errors.isEmpty() }?.mapToTransport()
 )
 
 fun BeContext.toDeleteResponse() = DeleteTaskResponse(
-    responseId = this.responseId.id,
+    responseId = responseId.id,
     messageType = DeleteTaskResponse::class.java.simpleName,
-    result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.mapErrorsToTransport(),
-    task = if(errors.isEmpty()) this.responseTask.mapToTransport() else null
+    result =
+    if(errors.isEmpty() && status != ResponseStatus.ERROR)
+        ResponseResult.SUCCESS
+    else ResponseResult.ERROR,
+    errors = errors.mapErrorsToTransport(),
+    task = responseTask.takeIf { errors.isEmpty() }?.mapToTransport()
 )
 
 fun BeContext.toSearchResponse() = SearchTasksResponse(
-    responseId = this.responseId.id,
+    responseId = responseId.id,
     messageType = SearchTasksResponse::class.java.simpleName,
-    result = if(errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
-    errors = this.errors.mapErrorsToTransport(),
-    availableTasks = if(errors.isEmpty()) this.responseTasks.mapTasksToTransport() else null
+    result =
+    if(errors.isEmpty() && status != ResponseStatus.ERROR)
+        ResponseResult.SUCCESS
+    else ResponseResult.ERROR,
+    errors = errors.mapErrorsToTransport(),
+    availableTasks = responseTasks.takeIf { errors.isEmpty() }?.mapTasksToTransport()
 )
 
 private fun MutableList<TaskDomain>.mapTasksToTransport(): List<UpdatableTask> =
-    this.map { it.mapToTransport() }.toList()
+    map { it.mapToTransport() }.toList()
 
 fun MutableList<DomainApiError>.mapErrorsToTransport(): List<ApiError> =
-    this.map { it.mapToTransport() }.toList()
+    map { it.mapToTransport() }.toList()
 
 fun com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError.mapToTransport() : ApiError =
-    ApiError(this.message, this.field)
+    ApiError(message, field)
 
 fun TaskDomain.mapToTransport(): UpdatableTask =
     UpdatableTask(
-        name = this.name.name,
-        id = this.id.id,
-        description = this.description.description,
-        attainabilityDescription = this.attainabilityDescription.description,
-        relevanceDescription = this.relevanceDescription.description,
-        measurability = this.measurability.mapToTransport(),
-        dueTime = this.dueTime.dueTime.toString(),
-        parent = this.parent.id,
-        children = this.children.mapChildrenToTransport()
+        name = name.name,
+        id = id.mapToTransport(),
+        description = description.description,
+        attainabilityDescription = attainabilityDescription.description,
+        relevanceDescription = relevanceDescription.description,
+        measurability = measurability.mapToTransport(),
+        dueTime = dueTime.dueTime.toString(),
+        parent = parent.mapToTransport(),
+        children = children.map { it.id }.toList()
     )
 
+private fun TaskId.mapToTransport(): String = id
 
-private fun List<TaskIdReference>.mapChildrenToTransport(): List<String> =
-    this.map { it.id }.toList()
-
+private fun TaskIdReference.mapToTransport(): String = id
 
 private fun MeasurabilityDomain.mapToTransport(): Measurability =
     Measurability(
-        description = this.description.description,
-        progressMark = this.progress.percent
+        description = description.description,
+        progressMark = progress.percent
     )
 
