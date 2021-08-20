@@ -33,7 +33,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateTaskResponse'
-  /tasks/read:
+  /task/read:
     description: reading task by id
     post:
       tags:
