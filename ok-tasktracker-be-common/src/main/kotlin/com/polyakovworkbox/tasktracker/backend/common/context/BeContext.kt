@@ -7,8 +7,11 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.ResponseId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter
+import java.time.Instant
 
 data class BeContext(
+    var startTime: Instant = Instant.MIN,
+
     var requestId: RequestId = RequestId.NONE,
     var debug: Debug = Debug.DEFAULT,
 
@@ -22,4 +25,8 @@ data class BeContext(
     var responseId: ResponseId = ResponseId.NONE,
     var errors: MutableList<ApiError> = mutableListOf()
 ) {
+    fun addError(e: Throwable, isErrorStatus: Boolean = true) {
+        errors.add(ApiError(e))
+        if(isErrorStatus) status = ResponseStatus.ERROR
+    }
 }

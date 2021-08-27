@@ -1,5 +1,6 @@
 package com.polyakovworkbox.tasktracker.stubs
 
+import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Percent
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability
@@ -21,6 +22,8 @@ object TaskStub {
     )
 
     fun getModel() = tolkienTask
+
+    fun getModelUpdated(context: BeContext) = tolkienTask.apply { this.dueTime = context.requestTask.dueTime }
 
     fun isCorrectId(id: String): Boolean =
         id == tolkienTask.id.id

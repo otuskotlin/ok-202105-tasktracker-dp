@@ -25,3 +25,5 @@ include("ok-tasktracker-be-spring-app")
 include("ok-tasktracker-be-transport-openapi")
 include("ok-tasktracker-be-mappers-openapi")
 include("ok-tasktracker-be-stubs")
+include("ok-tasktracker-be-service-openapi")
+
