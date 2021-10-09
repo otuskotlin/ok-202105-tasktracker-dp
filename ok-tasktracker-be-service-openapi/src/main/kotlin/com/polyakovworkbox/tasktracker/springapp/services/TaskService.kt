@@ -22,6 +22,7 @@ import com.polyakovworkbox.tasktracker.backend.common.mapping.toReadResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toSearchResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toUpdateResponse
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
+import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
 
 open class TaskService {
@@ -88,7 +89,7 @@ open class TaskService {
 
         return if (TaskStub.isCorrectId(requestedId)) {
             context.apply {
-                responseTask = requestTask
+                responseTask = TaskStub.getDeletedModel(context)
             }.toDeleteResponse()
         } else {
             context.apply {

@@ -25,6 +25,8 @@ object TaskStub {
 
     fun getModelUpdated(context: BeContext) = tolkienTask.apply { this.dueTime = context.requestTask.dueTime }
 
+    fun getDeletedModel(context: BeContext) = context.requestTask.apply { id = context.requestTaskId }
+
     fun isCorrectId(id: String): Boolean =
         id == tolkienTask.id.id
 

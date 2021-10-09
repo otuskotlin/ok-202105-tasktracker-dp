@@ -27,7 +27,7 @@ class TaskController(
 ) {
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
-        val context = BeContext(Instant.now())
+        val context = BeContext(startTime = Instant.now())
 
         return try {
             runBlocking { taskService.create(context, request) }
@@ -38,7 +38,7 @@ class TaskController(
 
     @PostMapping("read")
     fun readTask(@RequestBody request: ReadTaskRequest): BaseResponse {
-        val context = BeContext(Instant.now())
+        val context = BeContext(startTime = Instant.now())
 
         return try {
             runBlocking { taskService.read(context, request) }
@@ -50,7 +50,7 @@ class TaskController(
 
     @PostMapping("update")
     fun updateTask(@RequestBody request: UpdateTaskRequest): BaseResponse {
-        val context = BeContext(Instant.now())
+        val context = BeContext(startTime = Instant.now())
 
         return try {
             runBlocking { taskService.update(context, request) }
@@ -61,7 +61,7 @@ class TaskController(
 
     @PostMapping("delete")
     fun deleteTask(@RequestBody request: DeleteTaskRequest): BaseResponse {
-        val context = BeContext(Instant.now())
+        val context = BeContext(startTime = Instant.now())
 
         return try {
             runBlocking { taskService.delete(context, request) }
@@ -72,7 +72,7 @@ class TaskController(
 
     @PostMapping("search")
     fun searchTask(@RequestBody request: SearchTasksRequest): BaseResponse {
-        val context = BeContext(Instant.now())
+        val context = BeContext(startTime = Instant.now())
 
         return try {
             runBlocking { taskService.search(context, request) }
