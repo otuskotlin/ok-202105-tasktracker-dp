@@ -1,0 +1,59 @@
+###
+POST http://localhost:8080/task/create
+Content-Type: application/json
+
+{
+  "messageType": "CreateTaskRequest",
+  "requestId": "1234567890",
+  "task": {
+    "name": "some name",
+    "description": "some description"
+  }
+}
+
+###
+POST http://localhost:8080/task/read
+Content-Type: application/json
+
+{
+  "messageType": "ReadTaskRequest",
+  "requestId": "1234567890",
+  "id": "1"
+}
+
+###
+POST http://localhost:8080/task/update
+Content-Type: application/json
+
+{
+  "messageType": "UpdateTaskRequest",
+  "requestId": "1234567890",
+  "task": {
+    "id": "1",
+    "name": "some name",
+    "description": "some description",
+    "dueTime": "2021-08-23T18:25:43.511Z"
+  }
+}
+
+###
+POST http://localhost:8080/task/delete
+Content-Type: application/json
+
+{
+  "messageType": "DeleteTaskRequest",
+  "requestId": "1234567890",
+  "id": "1"
+}
+
+###
+POST http://localhost:8080/task/search
+Content-Type: application/json
+
+{
+  "messageType": "SearchTasksRequest",
+  "requestId": "1234567890",
+  "searchFilter": {
+    "nameFilter": "The Lord of the Rings"
+  }
+}

@@ -33,7 +33,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateTaskResponse'
-  /tasks/read:
+  /task/read:
     description: reading task by id
     post:
       tags:
@@ -131,30 +131,40 @@ components:
     BaseRequest:
       description: contains everything that is needed for any request of any kind
       type: object
-      properties:
-        requestId:
-          type: string
-        debug:
-          $ref: '#/components/schemas/Debug'
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            requestId:
+              type: string
+            debug:
+              $ref: '#/components/schemas/Debug'
+      discriminator:
+        propertyName: messageType
 
     BaseResponse:
       description: contains everything that is needed for any response of any kind
       type: object
-      properties:
-        responseId:
-          type: string
-        result:
-          $ref: '#/components/schemas/ResponseResult'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiError'
-      required:
-        - responseId
-
-    CreateTaskRequest:
       allOf:
         - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            responseId:
+              type: string
+            result:
+              $ref: '#/components/schemas/ResponseResult'
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/ApiError'
+      required:
+        - responseId
+      discriminator:
+        propertyName: messageType
+
+    CreateTaskRequest:
+      type: object
+      allOf:
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
@@ -163,7 +173,6 @@ components:
 
     CreateTaskResponse:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
@@ -172,7 +181,6 @@ components:
 
     ReadTaskRequest:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
@@ -181,7 +189,6 @@ components:
 
     ReadTaskResponse:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
@@ -190,7 +197,6 @@ components:
 
     UpdateTaskRequest:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
@@ -199,7 +205,6 @@ components:
 
     UpdateTaskResponse:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
@@ -208,7 +213,6 @@ components:
 
     DeleteTaskRequest:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
@@ -217,7 +221,6 @@ components:
 
     DeleteTaskResponse:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
@@ -226,7 +229,6 @@ components:
 
     SearchTasksRequest:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseRequest'
         - type: object
           properties:
@@ -235,7 +237,6 @@ components:
 
     SearchTasksResponse:
       allOf:
-        - $ref: '#/components/schemas/BaseMessage'
         - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
