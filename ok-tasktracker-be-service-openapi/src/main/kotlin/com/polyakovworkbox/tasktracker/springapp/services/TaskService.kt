@@ -1,11 +1,13 @@
 package com.polyakovworkbox.tasktracker.springapp.services
 
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.BaseResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.DeleteTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.DeleteTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskResponse
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ResponseResult
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchTasksRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchTasksResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskRequest
@@ -15,6 +17,7 @@ import com.polyakovworkbox.tasktracker.backend.common.context.ResponseStatus
 import com.polyakovworkbox.tasktracker.backend.common.mapping.mapRequest
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toCreateResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toDeleteResponse
+import com.polyakovworkbox.tasktracker.backend.common.mapping.toErrorResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toReadResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toSearchResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toUpdateResponse
@@ -23,13 +26,25 @@ import com.polyakovworkbox.tasktracker.stubs.TaskStub
 
 open class TaskService {
 
-    suspend fun create(context: BeContext, request: CreateTaskRequest): CreateTaskResponse =
-        context.mapRequest(request).apply {
-            this.responseTask = TaskStub.getModel()
-        }.toCreateResponse()
+    suspend fun create(context: BeContext, request: CreateTaskRequest): BaseResponse {
+        return if(TaskStub.isCreatedSuccessfully()) {
+            context.mapRequest(request).apply {
+                this.responseTask = TaskStub.getModel()
+            }.toCreateResponse()
+        } else {
+            context.apply {
+                status = ResponseStatus.ERROR
+                errors.add(
+                    ApiError(
+                        message = "Task could not be created"
+                    )
+                )
+            }.toErrorResponse(::CreateTaskResponse)
+        }
 
+    }
 
-    suspend fun read(context: BeContext, request: ReadTaskRequest): ReadTaskResponse {
+    suspend fun read(context: BeContext, request: ReadTaskRequest): BaseResponse {
         context.mapRequest(request)
         val requestedId = context.requestTaskId.id
 
@@ -45,16 +60,29 @@ open class TaskService {
                         message = "Task with id $requestedId cannot be found"
                     )
                 )
-            }.toReadResponse()
+            }.toErrorResponse(::ReadTaskResponse)
         }
     }
 
-    suspend fun update(context: BeContext, request: UpdateTaskRequest): UpdateTaskResponse =
-        context.mapRequest(request).apply {
-            this.responseTask = TaskStub.getModelUpdated(context)
-        }.toUpdateResponse()
+    suspend fun update(context: BeContext, request: UpdateTaskRequest): BaseResponse {
+        return if (TaskStub.isUpdatedSuccessfully()) {
+            context.mapRequest(request).apply {
+                this.responseTask = TaskStub.getModelUpdated(context)
+            }.toUpdateResponse()
+        } else {
+            context.apply {
+                status = ResponseStatus.ERROR
+                errors.add(
+                    ApiError(
+                        message = "Task with id ${context.requestTaskId} couldn't be updated"
+                    )
+                )
+            }.toErrorResponse(::UpdateTaskResponse)
+        }
+    }
 
-    suspend fun delete(context: BeContext, request: DeleteTaskRequest): DeleteTaskResponse {
+
+    suspend fun delete(context: BeContext, request: DeleteTaskRequest): BaseResponse {
         context.mapRequest(request)
         val requestedId = context.requestTaskId.id
 
@@ -70,11 +98,11 @@ open class TaskService {
                         message = "Task with id $requestedId cannot be found"
                     )
                 )
-            }.toDeleteResponse()
+            }.toErrorResponse(::DeleteTaskResponse)
         }
     }
 
-    suspend fun search(context: BeContext, request: SearchTasksRequest): SearchTasksResponse {
+    suspend fun search(context: BeContext, request: SearchTasksRequest): BaseResponse {
         context.mapRequest(request)
 
         return if (TaskStub.taskWithCriteriaExists(context.searchFilter)) {
@@ -89,32 +117,13 @@ open class TaskService {
                         message = "Task with given criteria cannot be found"
                     )
                 )
-            }.toSearchResponse()
+            }.toErrorResponse(::SearchTasksResponse)
         }
     }
 
-    suspend fun createError(context: BeContext, e: Throwable) : CreateTaskResponse {
+    suspend inline fun <reified T : BaseResponse> toError(context: BeContext, e: Throwable,
+        createResponse: (String, String?, ResponseResult?, List<com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ApiError>) -> T) : BaseResponse {
         context.addError(e)
-        return context.toCreateResponse()
-    }
-
-    suspend fun readError(context: BeContext, e: Throwable) : ReadTaskResponse {
-        context.addError(e)
-        return context.toReadResponse()
-    }
-
-    suspend fun updateError(context: BeContext, e: Throwable) : UpdateTaskResponse {
-        context.addError(e)
-        return context.toUpdateResponse()
-    }
-
-    suspend fun deleteError(context: BeContext, e: Throwable) : DeleteTaskResponse {
-        context.addError(e)
-        return context.toDeleteResponse()
-    }
-
-    suspend fun searchError(context: BeContext, e: Throwable) : SearchTasksResponse {
-        context.addError(e)
-        return context.toSearchResponse()
+        return context.toErrorResponse(createResponse)
     }
 }

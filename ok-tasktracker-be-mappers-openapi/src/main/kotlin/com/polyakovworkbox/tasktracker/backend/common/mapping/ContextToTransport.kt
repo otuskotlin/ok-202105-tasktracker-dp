@@ -1,6 +1,7 @@
 package com.polyakovworkbox.tasktracker.backend.common.mapping
 
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ApiError
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.BaseResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.DeleteTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.Measurability
@@ -16,7 +17,6 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReferenc
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError as DomainApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task as TaskDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability as MeasurabilityDomain
-
 
 fun BeContext.toCreateResponse() = CreateTaskResponse(
     responseId = responseId.id,
@@ -72,6 +72,13 @@ fun BeContext.toSearchResponse() = SearchTasksResponse(
     errors = errors.mapErrorsToTransport(),
     availableTasks = responseTasks.takeIf { errors.isEmpty() }?.mapTasksToTransport()
 )
+
+inline fun <reified T : BaseResponse>BeContext.toErrorResponse(createResponse: (String, String?, ResponseResult?, List<ApiError>) -> T): T =
+    createResponse(
+        this.responseId.id,
+        T::class.java.simpleName,
+        ResponseResult.ERROR,
+        errors.mapErrorsToTransport())
 
 private fun MutableList<TaskDomain>.mapTasksToTransport(): List<UpdatableTask> =
     map { it.mapToTransport() }.toList()

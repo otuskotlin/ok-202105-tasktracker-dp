@@ -44,6 +44,7 @@ object TaskStub {
                 || progressMatches
     }
 
+    fun isCreatedSuccessfully(): Boolean = true
 
-
+    fun isUpdatedSuccessfully(): Boolean = true
 }
