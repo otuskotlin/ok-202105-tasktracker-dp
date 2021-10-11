@@ -23,11 +23,18 @@ import com.polyakovworkbox.tasktracker.backend.common.mapping.toSearchResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toUpdateResponse
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
+import com.polyakovworkbox.tasktracker.backend.logics.TaskCrud
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
 
-open class TaskService {
+open class TaskService(
+    var crud: TaskCrud
+) {
 
     suspend fun create(context: BeContext, request: CreateTaskRequest): BaseResponse {
+        crud.create(context.mapRequest(request))
+        return context.toCreateResponse()
+
+/*
         return if(TaskStub.isCreatedSuccessfully()) {
             context.mapRequest(request).apply {
                 this.responseTask = TaskStub.getModel()
@@ -42,11 +49,15 @@ open class TaskService {
                 )
             }.toErrorResponse(::CreateTaskResponse)
         }
+*/
 
     }
 
     suspend fun read(context: BeContext, request: ReadTaskRequest): BaseResponse {
-        context.mapRequest(request)
+        crud.read(context.mapRequest(request))
+        return context.toReadResponse()
+
+/*        context.mapRequest(request)
         val requestedId = context.requestTaskId.id
 
         return if (TaskStub.isCorrectId(requestedId)) {
@@ -62,11 +73,14 @@ open class TaskService {
                     )
                 )
             }.toErrorResponse(::ReadTaskResponse)
-        }
+        }*/
     }
 
     suspend fun update(context: BeContext, request: UpdateTaskRequest): BaseResponse {
-        return if (TaskStub.isUpdatedSuccessfully()) {
+        crud.update(context.mapRequest(request))
+        return context.toUpdateResponse()
+
+/*        return if (TaskStub.isUpdatedSuccessfully()) {
             context.mapRequest(request).apply {
                 this.responseTask = TaskStub.getModelUpdated(context)
             }.toUpdateResponse()
@@ -79,12 +93,15 @@ open class TaskService {
                     )
                 )
             }.toErrorResponse(::UpdateTaskResponse)
-        }
+        }*/
     }
 
 
     suspend fun delete(context: BeContext, request: DeleteTaskRequest): BaseResponse {
-        context.mapRequest(request)
+        crud.delete(context.mapRequest(request))
+        return context.toDeleteResponse()
+
+/*        context.mapRequest(request)
         val requestedId = context.requestTaskId.id
 
         return if (TaskStub.isCorrectId(requestedId)) {
@@ -100,11 +117,14 @@ open class TaskService {
                     )
                 )
             }.toErrorResponse(::DeleteTaskResponse)
-        }
+        }*/
     }
 
     suspend fun search(context: BeContext, request: SearchTasksRequest): BaseResponse {
-        context.mapRequest(request)
+        crud.search(context.mapRequest(request))
+        return context.toSearchResponse()
+
+/*        context.mapRequest(request)
 
         return if (TaskStub.taskWithCriteriaExists(context.searchFilter)) {
             context.apply {
@@ -119,7 +139,7 @@ open class TaskService {
                     )
                 )
             }.toErrorResponse(::SearchTasksResponse)
-        }
+        }*/
     }
 
     suspend inline fun <reified T : BaseResponse> toError(context: BeContext, e: Throwable,

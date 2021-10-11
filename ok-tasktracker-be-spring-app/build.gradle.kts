@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":ok-tasktracker-be-mappers-openapi"))
     implementation(project(":ok-tasktracker-be-stubs"))
     implementation(project(":ok-tasktracker-be-service-openapi"))
+    implementation(project(":ok-tasktracker-be-logic"))
 }
 
 tasks.withType<KotlinCompile> {
