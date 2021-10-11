@@ -26,4 +26,5 @@ include("ok-tasktracker-be-transport-openapi")
 include("ok-tasktracker-be-mappers-openapi")
 include("ok-tasktracker-be-stubs")
 include("ok-tasktracker-be-service-openapi")
+include("ok-tasktracker-be-common-cor")
 
