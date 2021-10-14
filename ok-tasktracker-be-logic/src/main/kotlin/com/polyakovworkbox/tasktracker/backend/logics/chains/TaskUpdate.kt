@@ -7,6 +7,8 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskCreateStub
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskUpdateStub
+import com.polyakovworkbox.tasktracker.validation.cor.validation
+import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
 import ru.otus.otuskotlin.marketplace.common.cor.ICorExec
 import ru.otus.otuskotlin.marketplace.common.cor.chain
 
@@ -14,7 +16,9 @@ object TaskUpdate: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.UPDATE)
     chainInit("Init of the chain")
 
-    // validation
+    validation {
+        validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTask.id.id } }
+    }
 
     taskUpdateStub("Handling stub cases")
 

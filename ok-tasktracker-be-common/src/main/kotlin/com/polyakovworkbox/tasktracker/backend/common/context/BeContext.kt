@@ -28,7 +28,12 @@ data class BeContext(
     var corStatus: CorStatus = CorStatus.NONE,
 
     var responseId: ResponseId = ResponseId.NONE,
-    var errors: MutableList<ApiError> = mutableListOf()
+    var errors: MutableList<ApiError> = mutableListOf(),
+
+    var x: String = "",
+    var y: String = ""
+
+
 ) {
     fun addError(e: Throwable, isErrorStatus: Boolean = true) {
         errors.add(ApiError(e))

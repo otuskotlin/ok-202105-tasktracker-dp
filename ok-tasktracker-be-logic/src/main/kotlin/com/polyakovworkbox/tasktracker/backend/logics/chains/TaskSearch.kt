@@ -7,14 +7,14 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskCreateStub
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskSearchStub
+import com.polyakovworkbox.tasktracker.validation.cor.validation
+import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
 import ru.otus.otuskotlin.marketplace.common.cor.ICorExec
 import ru.otus.otuskotlin.marketplace.common.cor.chain
 
 object TaskSearch: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.SEARCH)
     chainInit("Init of the chain")
-
-    // validation
 
     taskSearchStub("Handling stub cases")
 
