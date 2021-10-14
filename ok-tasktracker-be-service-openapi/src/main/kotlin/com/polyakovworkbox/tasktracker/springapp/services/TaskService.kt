@@ -33,113 +33,26 @@ open class TaskService(
     suspend fun create(context: BeContext, request: CreateTaskRequest): BaseResponse {
         crud.create(context.mapRequest(request))
         return context.toCreateResponse()
-
-/*
-        return if(TaskStub.isCreatedSuccessfully()) {
-            context.mapRequest(request).apply {
-                this.responseTask = TaskStub.getModel()
-            }.toCreateResponse()
-        } else {
-            context.apply {
-                status = ResponseStatus.ERROR
-                errors.add(
-                    ApiError(
-                        message = "Task could not be created"
-                    )
-                )
-            }.toErrorResponse(::CreateTaskResponse)
-        }
-*/
-
     }
 
     suspend fun read(context: BeContext, request: ReadTaskRequest): BaseResponse {
         crud.read(context.mapRequest(request))
         return context.toReadResponse()
-
-/*        context.mapRequest(request)
-        val requestedId = context.requestTaskId.id
-
-        return if (TaskStub.isCorrectId(requestedId)) {
-            context.apply {
-                responseTask = TaskStub.getModel()
-            }.toReadResponse()
-        } else {
-            context.apply {
-                status = ResponseStatus.ERROR
-                errors.add(
-                    ApiError(
-                        message = "Task with id $requestedId cannot be found"
-                    )
-                )
-            }.toErrorResponse(::ReadTaskResponse)
-        }*/
     }
 
     suspend fun update(context: BeContext, request: UpdateTaskRequest): BaseResponse {
         crud.update(context.mapRequest(request))
         return context.toUpdateResponse()
-
-/*        return if (TaskStub.isUpdatedSuccessfully()) {
-            context.mapRequest(request).apply {
-                this.responseTask = TaskStub.getModelUpdated(context)
-            }.toUpdateResponse()
-        } else {
-            context.apply {
-                status = ResponseStatus.ERROR
-                errors.add(
-                    ApiError(
-                        message = "Task with id ${context.requestTaskId} couldn't be updated"
-                    )
-                )
-            }.toErrorResponse(::UpdateTaskResponse)
-        }*/
     }
-
 
     suspend fun delete(context: BeContext, request: DeleteTaskRequest): BaseResponse {
         crud.delete(context.mapRequest(request))
         return context.toDeleteResponse()
-
-/*        context.mapRequest(request)
-        val requestedId = context.requestTaskId.id
-
-        return if (TaskStub.isCorrectId(requestedId)) {
-            context.apply {
-                responseTask = TaskStub.getDeletedModel(context)
-            }.toDeleteResponse()
-        } else {
-            context.apply {
-                status = ResponseStatus.ERROR
-                errors.add(
-                    ApiError(
-                        message = "Task with id $requestedId cannot be found"
-                    )
-                )
-            }.toErrorResponse(::DeleteTaskResponse)
-        }*/
     }
 
     suspend fun search(context: BeContext, request: SearchTasksRequest): BaseResponse {
         crud.search(context.mapRequest(request))
         return context.toSearchResponse()
-
-/*        context.mapRequest(request)
-
-        return if (TaskStub.taskWithCriteriaExists(context.searchFilter)) {
-            context.apply {
-                responseTasks = mutableListOf(TaskStub.getModel())
-            }.toSearchResponse()
-        } else {
-            context.apply {
-                status = ResponseStatus.ERROR
-                errors.add(
-                    ApiError(
-                        message = "Task with given criteria cannot be found"
-                    )
-                )
-            }.toErrorResponse(::SearchTasksResponse)
-        }*/
     }
 
     suspend inline fun <reified T : BaseResponse> toError(context: BeContext, e: Throwable,
