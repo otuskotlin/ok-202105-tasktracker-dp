@@ -12,6 +12,7 @@ import com.polyakovworkbox.tasktracker.validation.cor.validation
 import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
 
 object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
+
     checkOperation("Check that operation is correct", Operation.DELETE)
     chainInit("Init of the chain")
 
@@ -22,6 +23,5 @@ object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
     }
 
     prepareResponse("Preparing response")
-
 
 }).build()

@@ -6,7 +6,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class Validation {
+class StringNotEmptyValidatorTest {
 
     @Test
     fun `string validation error`() {

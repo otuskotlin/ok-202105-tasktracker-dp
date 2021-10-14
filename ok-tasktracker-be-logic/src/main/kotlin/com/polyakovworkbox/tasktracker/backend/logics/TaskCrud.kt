@@ -25,6 +25,6 @@ class TaskCrud {
     }
 
     private fun BeContext.setSettings() = apply {
-        //TODO: introduce additional settings (like repository etc.) if required here
+        // introduce additional settings (like repository etc.) if required here
     }
 }

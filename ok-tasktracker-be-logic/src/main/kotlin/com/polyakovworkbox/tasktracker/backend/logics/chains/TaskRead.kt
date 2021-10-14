@@ -12,6 +12,7 @@ import com.polyakovworkbox.tasktracker.validation.cor.validation
 import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
 
 object TaskRead: ICorExec<BeContext> by chain<BeContext> ({
+
     checkOperation("Check that operation is correct", Operation.READ)
     chainInit("Init of the chain")
 
@@ -22,6 +23,5 @@ object TaskRead: ICorExec<BeContext> by chain<BeContext> ({
     }
 
     prepareResponse("Preparing response")
-
 
 }).build()

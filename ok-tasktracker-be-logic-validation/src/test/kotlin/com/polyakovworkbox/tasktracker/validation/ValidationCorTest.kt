@@ -23,8 +23,8 @@ class ValidationCorTest {
                     }
                 }
 
-                validate<String> { validator(StringNotEmptyValidator()); on { x } }
-                validate<String> { validator(StringNotEmptyValidator()); on { y } }
+                validate<String> { validator(StringNotEmptyValidator()); on { requestTask.description.description } }
+                validate<String> { validator(StringNotEmptyValidator()); on { requestTask.relevanceDescription.description } }
             }
         }
 
