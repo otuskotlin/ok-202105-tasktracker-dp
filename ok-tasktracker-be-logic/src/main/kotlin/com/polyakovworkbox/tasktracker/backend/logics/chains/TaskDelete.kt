@@ -15,11 +15,11 @@ object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.DELETE)
     chainInit("Init of the chain")
 
+    taskDeleteStub("Handling stub cases")
+
     validation {
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTaskId.id } }
     }
-
-    taskDeleteStub("Handling stub cases")
 
     prepareResponse("Preparing response")
 

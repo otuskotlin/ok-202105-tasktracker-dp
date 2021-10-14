@@ -15,11 +15,11 @@ object TaskRead: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.READ)
     chainInit("Init of the chain")
 
+    taskReadStub("Handling stub cases")
+
     validation {
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTaskId.id } }
     }
-
-    taskReadStub("Handling stub cases")
 
     prepareResponse("Preparing response")
 

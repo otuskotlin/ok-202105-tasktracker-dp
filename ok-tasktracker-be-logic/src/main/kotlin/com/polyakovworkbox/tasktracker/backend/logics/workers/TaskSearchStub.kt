@@ -1,6 +1,7 @@
 package com.polyakovworkbox.tasktracker.backend.logics.workers
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
+import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Stub
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
@@ -20,6 +21,18 @@ internal fun CorChainDsl<BeContext>.taskSearchStub(title: String) = chain {
         on { debug.stub == Stub.SUCCESS }
         handle {
             responseTasks = mutableListOf(TaskStub.getModel())
+            corStatus = CorStatus.FINISHING
+        }
+    }
+    worker {
+        this.title = "ERROR_DB stub case"
+        on { debug.stub == Stub.ERROR_DB }
+        handle {
+            errors.add(
+                ApiError(
+                    message = "DB error occurred"
+                )
+            )
             corStatus = CorStatus.FINISHING
         }
     }

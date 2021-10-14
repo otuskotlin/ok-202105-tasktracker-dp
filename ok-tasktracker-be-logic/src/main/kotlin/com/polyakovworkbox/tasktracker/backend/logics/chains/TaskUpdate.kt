@@ -15,11 +15,11 @@ object TaskUpdate: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.UPDATE)
     chainInit("Init of the chain")
 
+    taskUpdateStub("Handling stub cases")
+
     validation {
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTask.id.id } }
     }
-
-    taskUpdateStub("Handling stub cases")
 
     prepareResponse("Preparing response")
 
