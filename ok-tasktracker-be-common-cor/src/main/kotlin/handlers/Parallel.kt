@@ -1,9 +1,9 @@
-package ru.otus.otuskotlin.marketplace.common.cor.handlers
+package com.polyakovworkbox.tasktracker.common.cor.handlers
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import ru.otus.otuskotlin.marketplace.common.cor.*
-import ru.otus.otuskotlin.marketplace.common.cor.CorDslMarker
+import com.polyakovworkbox.tasktracker.common.cor.*
+import com.polyakovworkbox.tasktracker.common.cor.CorDslMarker
 
 @CorDslMarker
 fun <T> ICorChainDsl<T>.parallel(function: CorParallelDsl<T>.() -> Unit) {

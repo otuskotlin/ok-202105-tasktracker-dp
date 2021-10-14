@@ -1,7 +1,7 @@
-package ru.otus.otuskotlin.marketplace.common.cor
+package com.polyakovworkbox.tasktracker.common.cor
 
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.CorChainDsl
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.CorWorkerDsl
+import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.cor.handlers.CorWorkerDsl
 
 interface ICorExecDsl<T> {
     var title: String

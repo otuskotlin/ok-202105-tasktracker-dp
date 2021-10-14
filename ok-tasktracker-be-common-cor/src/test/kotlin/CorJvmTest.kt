@@ -1,6 +1,6 @@
 import kotlinx.coroutines.runBlocking
-import ru.otus.otuskotlin.marketplace.common.cor.CorBaseTest
-import ru.otus.otuskotlin.marketplace.common.cor.TestContext
+import com.polyakovworkbox.tasktracker.common.cor.CorBaseTest
+import com.polyakovworkbox.tasktracker.common.cor.TestContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -1,10 +1,10 @@
-package ru.otus.otuskotlin.marketplace.common.cor.handlers
+package com.polyakovworkbox.tasktracker.common.cor.handlers
 
-import ru.otus.otuskotlin.marketplace.common.cor.ICorChainDsl
-import ru.otus.otuskotlin.marketplace.common.cor.ICorExec
-import ru.otus.otuskotlin.marketplace.common.cor.ICorExecDsl
-import ru.otus.otuskotlin.marketplace.common.cor.ICorWorker
-import ru.otus.otuskotlin.marketplace.common.cor.CorDslMarker
+import com.polyakovworkbox.tasktracker.common.cor.ICorChainDsl
+import com.polyakovworkbox.tasktracker.common.cor.ICorExec
+import com.polyakovworkbox.tasktracker.common.cor.ICorExecDsl
+import com.polyakovworkbox.tasktracker.common.cor.ICorWorker
+import com.polyakovworkbox.tasktracker.common.cor.CorDslMarker
 
 @CorDslMarker
 fun <T> ICorChainDsl<T>.chain(function: CorChainDsl<T>.() -> Unit) {

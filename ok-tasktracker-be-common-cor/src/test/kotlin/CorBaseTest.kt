@@ -1,8 +1,8 @@
-package ru.otus.otuskotlin.marketplace.common.cor
+package com.polyakovworkbox.tasktracker.common.cor
 
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.chain
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.parallel
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.worker
+import com.polyakovworkbox.tasktracker.common.cor.handlers.chain
+import com.polyakovworkbox.tasktracker.common.cor.handlers.parallel
+import com.polyakovworkbox.tasktracker.common.cor.handlers.worker
 import kotlin.test.Test
 
 class CorBaseTest {

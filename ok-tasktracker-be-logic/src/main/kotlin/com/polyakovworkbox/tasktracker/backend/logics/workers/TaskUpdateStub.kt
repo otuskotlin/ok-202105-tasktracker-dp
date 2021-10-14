@@ -4,9 +4,9 @@ import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Stub
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.CorChainDsl
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.chain
-import ru.otus.otuskotlin.marketplace.common.cor.handlers.worker
+import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.cor.handlers.chain
+import com.polyakovworkbox.tasktracker.common.cor.handlers.worker
 import java.lang.IllegalArgumentException
 
 internal fun CorChainDsl<BeContext>.taskUpdateStub(title: String) = chain {

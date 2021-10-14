@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.common.cor
+package com.polyakovworkbox.tasktracker.common.cor
 
 @DslMarker
 annotation class CorDslMarker

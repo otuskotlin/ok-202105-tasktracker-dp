@@ -50,7 +50,7 @@ class TaskControllerTest {
             CreateTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""read "The Lord of the Rings"""", response.task?.name)
 
     }
@@ -70,7 +70,7 @@ class TaskControllerTest {
             ReadTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""read "The Lord of the Rings"""", response.task?.name)
 
     }
@@ -95,7 +95,7 @@ class TaskControllerTest {
             UpdateTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""2021-08-23T18:25:43.511Z""", response.task?.dueTime)
 
 
@@ -115,7 +115,7 @@ class TaskControllerTest {
             DeleteTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("1", response.task?.id)
     }
 
@@ -135,7 +135,7 @@ class TaskControllerTest {
             SearchTasksResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertThat(response.availableTasks?.all { it.name.contains("The Lord of the Rings") })
 
     }

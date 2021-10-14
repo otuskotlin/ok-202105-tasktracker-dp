@@ -40,8 +40,7 @@ class TaskCrudValidationTest {
         val context = BeContext(
             requestTask = TaskStub.getModel().apply { id = TaskId.NONE },
             debug = Debug(
-                mode = Mode.TEST,
-                stub = Stub.SUCCESS
+                mode = Mode.PROD,
             ),
             operation = Operation.CREATE
         )
