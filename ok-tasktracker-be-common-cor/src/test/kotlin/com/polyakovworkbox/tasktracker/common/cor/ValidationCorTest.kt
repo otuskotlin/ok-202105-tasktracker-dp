@@ -2,6 +2,7 @@ package com.polyakovworkbox.tasktracker.common.cor
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
+import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.common.ValidationResult
 import com.polyakovworkbox.tasktracker.validators.StringNotEmptyValidator
 import kotlinx.coroutines.runBlocking
@@ -12,7 +13,9 @@ class ValidationCorTest {
 
     @Test
     fun `test validation in cor`() {
-        val context = BeContext()
+        val context = BeContext().apply {
+            corStatus = CorStatus.RUNNING
+        }
 
         val chain = chain<BeContext> {
            validation {

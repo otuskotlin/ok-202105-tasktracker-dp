@@ -8,7 +8,7 @@ import com.polyakovworkbox.tasktracker.common.handlers.worker
 fun ICorChainDsl<BeContext>.validation(block: ValidationBuilder<BeContext>.() -> Unit) {
     worker {
         title = "Validation"
-        on { corStatus != CorStatus.FINISHING }
+        on { corStatus == CorStatus.RUNNING }
         handle {
             ValidationBuilder<BeContext>().apply {
                 errorHandler {result ->
