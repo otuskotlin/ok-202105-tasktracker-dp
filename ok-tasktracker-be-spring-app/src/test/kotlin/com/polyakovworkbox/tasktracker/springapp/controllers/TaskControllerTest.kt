@@ -17,6 +17,7 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -34,7 +35,7 @@ class TaskControllerTest {
     private lateinit var restTemplate: TestRestTemplate
 
     @Test
-    fun `create success`() {
+    fun `create stub success`() {
         val request = CreateTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
@@ -50,14 +51,35 @@ class TaskControllerTest {
             CreateTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""read "The Lord of the Rings"""", response.task?.name)
+    }
 
+    @Test
+    fun `create stub error`() {
+        val request = CreateTaskRequest(
+            requestId = "1234567890",
+            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            task = CreatableTask(
+                name = "some name",
+                description = "some description"
+            )
+        )
+
+        val response: CreateTaskResponse = restTemplate.postForObject(
+            "http://localhost:${port}/task/create",
+            request,
+            CreateTaskResponse::class.java
+        )
+
+        assertEquals(ResponseResult.ERROR, response.result)
+        assertEquals(null, response.task)
+        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
 
     @Test
-    fun `read success`() {
+    fun `read stub success`() {
         val request = ReadTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
@@ -70,14 +92,32 @@ class TaskControllerTest {
             ReadTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""read "The Lord of the Rings"""", response.task?.name)
+    }
 
+    @Test
+    fun `read stub error`() {
+        val request = ReadTaskRequest(
+            requestId = "1234567890",
+            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            id = "1"
+        )
+
+        val response: ReadTaskResponse = restTemplate.postForObject(
+            "http://localhost:${port}/task/read",
+            request,
+            ReadTaskResponse::class.java
+        )
+
+        assertEquals(ResponseResult.ERROR, response.result)
+        assertEquals(null, response.task)
+        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
 
     @Test
-    fun `update success`() {
+    fun `update stub success`() {
         val request = UpdateTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
@@ -95,14 +135,36 @@ class TaskControllerTest {
             UpdateTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("""2021-08-23T18:25:43.511Z""", response.task?.dueTime)
-
-
     }
 
     @Test
-    fun `delete success`() {
+    fun `update stub error`() {
+        val request = UpdateTaskRequest(
+            requestId = "1234567890",
+            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            task = UpdatableTask(
+                id = "1",
+                name = "some name",
+                description = "some description",
+                dueTime = "2021-08-23T18:25:43.511Z"
+            )
+        )
+
+        val response: UpdateTaskResponse = restTemplate.postForObject(
+            "http://localhost:${port}/task/update",
+            request,
+            UpdateTaskResponse::class.java
+        )
+
+        assertEquals(ResponseResult.ERROR, response.result)
+        assertEquals(null, response.task)
+        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+    }
+
+    @Test
+    fun `delete stub success`() {
         val request = DeleteTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
@@ -115,12 +177,31 @@ class TaskControllerTest {
             DeleteTaskResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertEquals("1", response.task?.id)
     }
 
     @Test
-    fun `search success`() {
+    fun `delete stub error`() {
+        val request = DeleteTaskRequest(
+            requestId = "1234567890",
+            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            id = "1"
+        )
+
+        val response: DeleteTaskResponse = restTemplate.postForObject(
+            "http://localhost:${port}/task/delete",
+            request,
+            DeleteTaskResponse::class.java
+        )
+
+        assertEquals(ResponseResult.ERROR, response.result)
+        assertEquals(null, response.task)
+        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+    }
+
+    @Test
+    fun `search stub success`() {
         val request = SearchTasksRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
@@ -135,8 +216,29 @@ class TaskControllerTest {
             SearchTasksResponse::class.java
         )
 
-        assertEquals(response.result, ResponseResult.SUCCESS)
+        assertEquals(ResponseResult.SUCCESS, response.result)
         assertThat(response.availableTasks?.all { it.name.contains("The Lord of the Rings") })
 
+    }
+
+    @Test
+    fun `search stub error`() {
+        val request = SearchTasksRequest(
+            requestId = "1234567890",
+            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            searchFilter = SearchFilter(
+                nameFilter = "The Lord of the Rings"
+            )
+        )
+
+        val response: SearchTasksResponse = restTemplate.postForObject(
+            "http://localhost:${port}/task/search",
+            request,
+            SearchTasksResponse::class.java
+        )
+
+        assertEquals(ResponseResult.ERROR, response.result)
+        assertThat(response.availableTasks.isNullOrEmpty())
+        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 }

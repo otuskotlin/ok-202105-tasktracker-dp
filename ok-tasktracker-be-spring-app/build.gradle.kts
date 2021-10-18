@@ -21,7 +21,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     implementation(project(":ok-tasktracker-be-common"))
@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":ok-tasktracker-be-mappers-openapi"))
     implementation(project(":ok-tasktracker-be-stubs"))
     implementation(project(":ok-tasktracker-be-service-openapi"))
+    implementation(project(":ok-tasktracker-be-logic"))
 }
 
 tasks.withType<KotlinCompile> {
