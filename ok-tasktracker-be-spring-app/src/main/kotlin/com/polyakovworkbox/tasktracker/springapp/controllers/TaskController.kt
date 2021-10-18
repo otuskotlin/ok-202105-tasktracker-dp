@@ -13,6 +13,7 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
+import com.polyakovworkbox.tasktracker.springapp.async.KafkaProducer
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.PostMapping

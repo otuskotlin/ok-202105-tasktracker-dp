@@ -1,5 +1,6 @@
 package com.polyakovworkbox.tasktracker.springapp.services
 
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.BaseMessage
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.BaseResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskResponse
@@ -25,6 +26,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.logics.TaskCrud
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
+import java.lang.IllegalArgumentException
 
 open class TaskService(
     var crud: TaskCrud
@@ -59,5 +61,18 @@ open class TaskService(
         createResponse: (String, String?, ResponseResult?, List<com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ApiError>) -> T) : BaseResponse {
         context.addError(e)
         return context.toErrorResponse(createResponse)
+    }
+
+    suspend fun handleAsyncTaskRequest(beContext: BeContext, baseMessage: BaseMessage) = try {
+        when (baseMessage) {
+            is CreateTaskRequest -> create(beContext, baseMessage)
+            is ReadTaskRequest -> read(beContext, baseMessage)
+            is UpdateTaskRequest -> update(beContext, baseMessage)
+            is DeleteTaskRequest -> delete(beContext, baseMessage)
+            is SearchTasksRequest -> search(beContext, baseMessage)
+            else -> throw IllegalArgumentException("Request is not Allowed: $baseMessage")
+        }
+    } catch (e: Throwable) {
+        toError(beContext, e, ::CreateTaskResponse) //TODO - diffirentiate task response param
     }
 }
