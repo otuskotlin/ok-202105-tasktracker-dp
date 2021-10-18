@@ -13,8 +13,6 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation(project(":ok-tasktracker-be-common"))
-    implementation(project(":ok-tasktracker-be-common-cor"))
-    implementation(project(":ok-tasktracker-be-common-validation"))
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))

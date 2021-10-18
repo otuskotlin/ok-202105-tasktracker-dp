@@ -15,5 +15,8 @@ dependencies {
     testImplementation(kotlin("test-junit"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
+
+    implementation(project(":ok-tasktracker-be-logic-validation"))
+    implementation(project(":ok-tasktracker-be-common"))
 }
 

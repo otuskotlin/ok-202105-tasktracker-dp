@@ -3,8 +3,8 @@ package com.polyakovworkbox.tasktracker.backend.logics.workers
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
-import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
-import com.polyakovworkbox.tasktracker.common.cor.handlers.worker
+import com.polyakovworkbox.tasktracker.common.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.handlers.worker
 import java.lang.IllegalStateException
 
 internal fun CorChainDsl<BeContext>.checkOperation(title: String, targetOperation: Operation) =

@@ -15,7 +15,6 @@ dependencies {
     implementation(project(":ok-tasktracker-be-common"))
     implementation(project(":ok-tasktracker-be-stubs"))
     implementation(project(":ok-tasktracker-be-logic-validation"))
-    implementation(project(":ok-tasktracker-be-common-validation"))
     implementation(project(":ok-tasktracker-be-common-cor"))
 
 

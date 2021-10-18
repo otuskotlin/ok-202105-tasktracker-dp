@@ -2,9 +2,9 @@ package com.polyakovworkbox.tasktracker.backend.logics.workers
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
-import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
-import com.polyakovworkbox.tasktracker.common.cor.handlers.chain
-import com.polyakovworkbox.tasktracker.common.cor.handlers.worker
+import com.polyakovworkbox.tasktracker.common.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.handlers.chain
+import com.polyakovworkbox.tasktracker.common.handlers.worker
 
 internal fun CorChainDsl<BeContext>.prepareResponse(title: String) = chain {
     this.title = title

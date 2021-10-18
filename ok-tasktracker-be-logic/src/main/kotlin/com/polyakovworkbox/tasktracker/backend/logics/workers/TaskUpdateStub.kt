@@ -4,10 +4,10 @@ import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Stub
+import com.polyakovworkbox.tasktracker.common.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.handlers.chain
+import com.polyakovworkbox.tasktracker.common.handlers.worker
 import com.polyakovworkbox.tasktracker.stubs.TaskStub
-import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
-import com.polyakovworkbox.tasktracker.common.cor.handlers.chain
-import com.polyakovworkbox.tasktracker.common.cor.handlers.worker
 import java.lang.IllegalArgumentException
 
 internal fun CorChainDsl<BeContext>.taskUpdateStub(title: String) = chain {

@@ -9,10 +9,10 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskUpdateStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
 import com.polyakovworkbox.tasktracker.common.cor.chain
-import com.polyakovworkbox.tasktracker.validation.cor.validation
-import com.polyakovworkbox.tasktracker.validation.lib.validators.AtLeastOneTaskValueProvidedValidator
-import com.polyakovworkbox.tasktracker.validation.lib.validators.NumberInRangeValidator
-import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
+import com.polyakovworkbox.tasktracker.common.cor.validation
+import com.polyakovworkbox.tasktracker.validators.AtLeastOneTaskValueProvidedValidator
+import com.polyakovworkbox.tasktracker.validators.NumberInRangeValidator
+import com.polyakovworkbox.tasktracker.validators.StringNotEmptyValidator
 
 object TaskUpdate: ICorExec<BeContext> by chain<BeContext> ({
 

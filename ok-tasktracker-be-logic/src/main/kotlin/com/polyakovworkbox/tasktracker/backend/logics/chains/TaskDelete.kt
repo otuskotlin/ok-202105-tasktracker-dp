@@ -8,8 +8,8 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskDeleteStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
 import com.polyakovworkbox.tasktracker.common.cor.chain
-import com.polyakovworkbox.tasktracker.validation.cor.validation
-import com.polyakovworkbox.tasktracker.validation.lib.validators.StringNotEmptyValidator
+import com.polyakovworkbox.tasktracker.common.cor.validation
+import com.polyakovworkbox.tasktracker.validators.StringNotEmptyValidator
 
 object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
 

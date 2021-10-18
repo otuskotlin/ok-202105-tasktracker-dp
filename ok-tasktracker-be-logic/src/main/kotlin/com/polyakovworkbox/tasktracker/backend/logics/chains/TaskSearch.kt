@@ -9,9 +9,9 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskSearchStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
 import com.polyakovworkbox.tasktracker.common.cor.chain
-import com.polyakovworkbox.tasktracker.validation.cor.validation
-import com.polyakovworkbox.tasktracker.validation.lib.validators.DueTimeWithoutEqualityModeValidator
-import com.polyakovworkbox.tasktracker.validation.lib.validators.PercentWithoutEqualityModeValidator
+import com.polyakovworkbox.tasktracker.common.cor.validation
+import com.polyakovworkbox.tasktracker.validators.DueTimeWithoutEqualityModeValidator
+import com.polyakovworkbox.tasktracker.validators.PercentWithoutEqualityModeValidator
 
 object TaskSearch: ICorExec<BeContext> by chain<BeContext> ({
 

@@ -1,7 +1,7 @@
 package com.polyakovworkbox.tasktracker.common.cor
 
-import com.polyakovworkbox.tasktracker.common.cor.handlers.CorChainDsl
-import com.polyakovworkbox.tasktracker.common.cor.handlers.CorWorkerDsl
+import com.polyakovworkbox.tasktracker.common.handlers.CorChainDsl
+import com.polyakovworkbox.tasktracker.common.handlers.CorWorkerDsl
 
 interface ICorExecDsl<T> {
     var title: String
