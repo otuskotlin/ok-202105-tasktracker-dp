@@ -22,9 +22,12 @@ class KafkaProducer {
 
     private val om = ObjectMapper().registerKotlinModule()
 
+    var messageBeingSent: String? = null
+
     fun sendMessage(msg: BaseResponse) {
         runBlocking {
             val json = withContext(Dispatchers.IO) { om.writeValueAsString(msg) }
+            messageBeingSent = json
 
             kafkaTemplate.send(env?.getProperty("kafka.topic") ?: "", json)
         }

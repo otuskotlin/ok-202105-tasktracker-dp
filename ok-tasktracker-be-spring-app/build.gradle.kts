@@ -27,6 +27,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(kotlin("test-junit"))
 
     implementation(project(":ok-tasktracker-be-common"))
     implementation(project(":ok-tasktracker-be-transport-openapi"))
