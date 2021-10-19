@@ -7,11 +7,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.env.Environment
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
 class KafkaProducer {
+
+    @Autowired
+    private val env: Environment? = null
 
     @Autowired
     private lateinit var kafkaTemplate: KafkaTemplate<String, String>
@@ -22,7 +26,17 @@ class KafkaProducer {
         runBlocking {
             val json = withContext(Dispatchers.IO) { om.writeValueAsString(msg) }
 
-            kafkaTemplate.send("TaskTopic", json)
+            kafkaTemplate.send(env?.getProperty("kafka.topic") ?: "", json)
         }
+    }
+
+    fun sendGeneralErrorMessage(e: Throwable) {
+        runBlocking {
+            kafkaTemplate.send(env?.getProperty("kafka.topic") ?: "", e.message)
+        }
+    }
+
+    fun sendMessage(msg: String) {
+        kafkaTemplate.send("TaskTopic", msg)
     }
 }

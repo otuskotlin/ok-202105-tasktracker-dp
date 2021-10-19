@@ -18,6 +18,9 @@ class KafkaProducerConfig {
     @Value(value = "\${kafka.bootstrapAddress}")
     private lateinit var bootstrapAddress: String
 
+    @Value(value = "\${kafka.topic}")
+    private lateinit var topic: String
+
     @Bean
     fun kafkaAdmin(): KafkaAdmin? {
         val configs: MutableMap<String, Any?> = HashMap()
@@ -26,8 +29,9 @@ class KafkaProducerConfig {
     }
 
     @Bean
+
     fun topic1(): NewTopic {
-        return NewTopic("TaskTopic", 1, 1)
+        return NewTopic(topic, 1, 1)
     }
 
     @Bean

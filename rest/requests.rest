@@ -8,6 +8,10 @@ Content-Type: application/json
   "task": {
     "name": "some name",
     "description": "some description"
+  },
+  "debug": {
+    "mode": "test",
+    "stub": "success"
   }
 }
 
@@ -18,7 +22,11 @@ Content-Type: application/json
 {
   "messageType": "ReadTaskRequest",
   "requestId": "1234567890",
-  "id": "1"
+  "id": "1",
+  "debug": {
+    "mode": "test",
+    "stub": "success"
+  }
 }
 
 ###
@@ -33,6 +41,10 @@ Content-Type: application/json
     "name": "some name",
     "description": "some description",
     "dueTime": "2021-08-23T18:25:43.511Z"
+  },
+  "debug": {
+    "mode": "test",
+    "stub": "success"
   }
 }
 
@@ -43,7 +55,11 @@ Content-Type: application/json
 {
   "messageType": "DeleteTaskRequest",
   "requestId": "1234567890",
-  "id": "1"
+  "id": "1",
+  "debug": {
+    "mode": "test",
+    "stub": "success"
+  }
 }
 
 ###
@@ -55,6 +71,10 @@ Content-Type: application/json
   "requestId": "1234567890",
   "searchFilter": {
     "nameFilter": "The Lord of the Rings"
+  },
+  "debug": {
+    "mode": "test",
+    "stub": "success"
   }
 }
 

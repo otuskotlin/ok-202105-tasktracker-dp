@@ -22,7 +22,6 @@ dependencies {
 
     implementation("org.springframework.kafka:spring-kafka:2.7.7")
 
-
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")

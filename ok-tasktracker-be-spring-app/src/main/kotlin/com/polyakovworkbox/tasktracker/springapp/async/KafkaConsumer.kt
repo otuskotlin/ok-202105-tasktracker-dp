@@ -27,7 +27,7 @@ class KafkaConsumer {
 
     private val om = ObjectMapper().registerKotlinModule()
 
-    @KafkaListener(topics = ["TaskTopic"])
+    @KafkaListener(topics = ["\${kafka.topic}"])
     fun receive(consumerRecord: ConsumerRecord<String, String>) {
         runBlocking {
             val beContext = BeContext().apply {
@@ -35,8 +35,13 @@ class KafkaConsumer {
             }
             val baseMessage: BaseMessage = om.readValue(consumerRecord.value(), BaseMessage::class.java)
             withContext(Dispatchers.IO) {
-                val result: BaseResponse = taskService.handleAsyncTaskRequest(beContext, baseMessage)
-                kafkaProducer.sendMessage(result)
+                try {
+                    val result: BaseResponse = taskService.handleAsyncTaskRequest(beContext, baseMessage)
+                    kafkaProducer.sendMessage(result)
+                } catch (e: Throwable) {
+                    kafkaProducer.sendGeneralErrorMessage(e)
+                }
+
             }
         }
     }
