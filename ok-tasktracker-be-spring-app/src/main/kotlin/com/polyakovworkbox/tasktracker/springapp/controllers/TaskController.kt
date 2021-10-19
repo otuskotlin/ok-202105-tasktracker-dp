@@ -25,26 +25,12 @@ import java.time.Instant
 @RestController
 @RequestMapping("/task")
 class TaskController(
-    val kafkaProducer: KafkaProducer,
     val taskService: TaskService
 ) {
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
         context.operation = Operation.CREATE
-
-        kafkaProducer.sendMessage("{\n" +
-                "  \"messageType\": \"CreateTaskRequest\",\n" +
-                "  \"requestId\": \"1234567890\",\n" +
-                "  \"task\": {\n" +
-                "    \"name\": \"some name\",\n" +
-                "    \"description\": \"some description\"\n" +
-                "  },\n" +
-                "  \"debug\": {\n" +
-                "    \"mode\": \"test\",\n" +
-                "    \"stub\": \"success\"\n" +
-                "  }\n" +
-                "}")
 
         return try {
             runBlocking { taskService.create(context, request) }

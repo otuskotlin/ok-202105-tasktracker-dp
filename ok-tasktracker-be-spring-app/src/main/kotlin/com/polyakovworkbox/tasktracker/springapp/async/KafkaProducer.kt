@@ -35,8 +35,4 @@ class KafkaProducer {
             kafkaTemplate.send(env?.getProperty("kafka.topic") ?: "", e.message)
         }
     }
-
-    fun sendMessage(msg: String) {
-        kafkaTemplate.send("TaskTopic", msg)
-    }
 }
