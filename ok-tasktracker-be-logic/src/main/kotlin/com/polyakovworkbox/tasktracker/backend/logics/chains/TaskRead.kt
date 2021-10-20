@@ -5,6 +5,9 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.chainInit
 import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
+import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoCreate
+import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoRead
+import com.polyakovworkbox.tasktracker.backend.logics.workers.selectDB
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskReadStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
 import com.polyakovworkbox.tasktracker.common.cor.chain
@@ -16,11 +19,15 @@ object TaskRead: ICorExec<BeContext> by chain<BeContext> ({
     checkOperation("Check that operation is correct", Operation.READ)
     chainInit("Init of the chain")
 
+    selectDB("selection between prod DB and stub DB")
+
     taskReadStub("Handling stub cases")
 
     validation {
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTaskId.id } }
     }
+
+    repoRead("Reading task from DB")
 
     prepareResponse("Preparing response")
 

@@ -9,6 +9,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.ResponseId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter
+import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
 import java.time.Instant
 
 data class BeContext(
@@ -17,6 +18,9 @@ data class BeContext(
 
     var requestId: RequestId = RequestId.NONE,
     var debug: Debug = Debug.DEFAULT,
+
+    var config: ContextConfig = ContextConfig(),
+    var taskRepo: ITaskRepo = ITaskRepo.NONE,
 
     var requestTask: Task = Task(),
     var requestTaskId: TaskId = TaskId.NONE,
