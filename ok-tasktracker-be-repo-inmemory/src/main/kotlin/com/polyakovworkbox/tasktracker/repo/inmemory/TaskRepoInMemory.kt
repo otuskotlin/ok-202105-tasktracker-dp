@@ -159,10 +159,6 @@ class TaskRepoInMemory(
     override suspend fun search(req: TaskFilterRequest): TasksRepoResponse {
 /*        val results = cache.asFlow()
             .filter {
-                if (req.ownerId == OwnerIdModel.NONE) return@filter true
-                req.ownerId.asString() == it.value.ownerId
-            }
-            .filter {
                 if (req.dealSide == DealSideModel.NONE) return@filter true
                 req.dealSide.name == it.value.dealSide
             }

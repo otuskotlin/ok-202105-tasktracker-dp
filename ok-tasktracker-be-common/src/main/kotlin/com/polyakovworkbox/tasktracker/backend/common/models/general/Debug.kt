@@ -10,7 +10,7 @@ data class Debug(
 }
 
 enum class Mode {
-    PROD, TEST
+    PROD, TEST, TESTDB
 }
 
 enum class Stub {
