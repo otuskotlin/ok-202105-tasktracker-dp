@@ -58,11 +58,11 @@ class SqlConnector(
             databaseConfig = databaseConfig,
             setupConnection = { connection ->
                 when (dbType) {
-                    DbType.MYSQL -> {
+/*                    DbType.MYSQL -> {
                         connection.transactionIsolation = DEFAULT_ISOLATION_LEVEL
                         connection.schema = schema
                         connection.catalog = schema
-                    }
+                    }*/
                     DbType.POSTGRESQL -> {
                         connection.transactionIsolation = DEFAULT_ISOLATION_LEVEL
                         connection.schema = schema

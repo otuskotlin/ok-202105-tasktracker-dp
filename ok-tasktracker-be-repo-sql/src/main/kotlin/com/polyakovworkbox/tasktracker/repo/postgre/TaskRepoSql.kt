@@ -13,6 +13,10 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.NoSuchElementException
+
 
 class TaskRepoSql(
     url: String = "jdbc:postgresql://localhost:5432/tasktrackerdevdb",
@@ -32,24 +36,21 @@ class TaskRepoSql(
         }
     }
 
-    private suspend fun save(item: Task): TaskRepoResponse {
+    private suspend fun save(req: Task): TaskRepoResponse {
         return safeTransaction({
-            val realOwnerId = UsersTable.insertIgnore {
-                if (item.ownerId != OwnerIdModel.NONE) {
-                    it[id] = item.ownerId.asUUID()
-                }
-                it[name] = item.ownerId.asUUID().toString()
-            } get UsersTable.id
-
             val res = TasksTable.insert {
-                if (item.id != TaskId.NONE) {
-                    it[id] = item.id.asUUID()
+                if (req.id != TaskId.NONE) {
+                    it[id] = req.id.asUUID()
                 }
-                it[name] = item.name
-                it[description] = item.description
-                it[ownerId] = realOwnerId
-                it[visibility] = item.visibility
-                it[dealSide] = item.dealSide
+                it[name] = req.name.name
+                it[description] = req.description.description
+                it[attainabilityDescription] = req.attainabilityDescription.description
+                it[relevanceDescription] = req.relevanceDescription.description
+                it[measurabilityDescription] = req.measurability.description.description
+                it[progress] = req.measurability.progress.percent
+                it[dueTime] = LocalDateTime.from(req.dueTime.dueTime)
+                it[parent] = req.parent.asUUID()
+                it[children] = req.children.singleOrNull()?.asUUID() ?: UUID.fromString("")
             }
 
             TaskRepoResponse(TasksTable.from(res), true)
@@ -57,21 +58,23 @@ class TaskRepoSql(
             TaskRepoResponse(
                 result = null,
                 isSuccess = false,
-                errors = listOf(ApiError(
-                    message = localizedMessage))
+                errors = listOf(
+                    ApiError(
+                    message = localizedMessage)
+                )
             )
         })
     }
 
     override suspend fun create(req: TaskModelRequest): TaskRepoResponse {
-        return save(req.ad)
+        return save(req.task)
     }
 
     override suspend fun read(req: TaskIdRequest): TaskRepoResponse {
         return safeTransaction({
-            val result = (AdsTable innerJoin UsersTable).select { AdsTable.id.eq(req.id.asUUID()) }.single()
+            val result = TasksTable.select { TasksTable.id.eq(req.asUUID()) }.single()
 
-            TaskRepoResponse(AdsTable.from(result), true)
+            TaskRepoResponse(TasksTable.from(result), true)
         }, {
             val err = when (this) {
                 is NoSuchElementException -> ApiError(field = "id", message = "Not Found")
@@ -83,26 +86,21 @@ class TaskRepoSql(
     }
 
     override suspend fun update(req: TaskModelRequest): TaskRepoResponse {
-        val ad = req.task
+        val task = req.task
         return safeTransaction({
-            UsersTable.insertIgnore {
-                if (ad.ownerId != OwnerIdModel.NONE) {
-                    it[id] = ad.ownerId.asUUID()
-                }
-                it[name] = ad.ownerId.asUUID().toString()
-            }
-            UsersTable.update({ UsersTable.id.eq(ad.ownerId.asUUID()) }) {
-                it[name] = ad.ownerId.asUUID().toString()
-            }
 
-            AdsTable.update({ AdsTable.id.eq(ad.id.asUUID()) }) {
-                it[title] = ad.title
-                it[description] = ad.description
-                it[ownerId] = ad.ownerId.asUUID()
-                it[visibility] = ad.visibility
-                it[dealSide] = ad.dealSide
+            TasksTable.update({ TasksTable.id.eq(task.id.asUUID()) }) {
+                it[name] = task.name.name
+                it[description] = task.description.description
+                it[attainabilityDescription] = task.attainabilityDescription.description
+                it[relevanceDescription] = task.relevanceDescription.description
+                it[measurabilityDescription] = task.measurability.description.description
+                it[progress] = task.measurability.progress.percent
+                it[dueTime] = LocalDateTime.from(task.dueTime.dueTime)
+                it[parent] = task.parent.asUUID()
+                it[children] = task.children.singleOrNull()?.asUUID() ?: UUID.fromString("")
             }
-            val result = AdsTable.select { AdsTable.id.eq(ad.id.asUUID()) }.single()
+            val result = TasksTable.select { TasksTable.id.eq(task.id.asUUID()) }.single()
 
             TaskRepoResponse(result = TasksTable.from(result), isSuccess = true)
         }, {
@@ -116,10 +114,10 @@ class TaskRepoSql(
 
     override suspend fun delete(req: TaskIdRequest): TaskRepoResponse {
         return safeTransaction({
-            val result = AdsTable.select { AdsTable.id.eq(req.id.asUUID()) }.single()
-            AdsTable.deleteWhere { AdsTable.id eq req.id.asUUID() }
+            val result = TasksTable.select { TasksTable.id.eq(req.asUUID()) }.single()
+            TasksTable.deleteWhere { TasksTable.id eq req.asUUID() }
 
-            TaskRepoResponse(result = AdsTable.from(result), isSuccess = true)
+            TaskRepoResponse(result = TasksTable.from(result), isSuccess = true)
         }, {
             TaskRepoResponse(
                 result = null,
@@ -129,15 +127,17 @@ class TaskRepoSql(
         })
     }
 
+    //TODO this is complete bullshit - make normal search here
     override suspend fun search(req: TaskFilterRequest): TasksRepoResponse {
         return safeTransaction({
             // Select only if options are provided
-            val results = (AdsTable innerJoin UsersTable).select {
-                (if (req.ownerId == OwnerIdModel.NONE) Op.TRUE else TasksTable.ownerId eq req.ownerId.asUUID()) and
-                        (if (req.dealSide == DealSideModel.NONE) Op.TRUE else AdsTable.dealSide eq req.dealSide)
+            val results = (TasksTable).select {
+                (if (req.searchString.isBlank()) Op.TRUE else TasksTable.id eq UUID.fromString(req.searchString))
+/*                (if (req.ownerId == OwnerIdModel.NONE) Op.TRUE else TasksTable.ownerId eq req.asUUID()) and
+                        (if (req.dealSide == DealSideModel.NONE) Op.TRUE else AdsTable.dealSide eq req.dealSide)*/
             }
 
-            TasksRepoResponse(result = results.map { AdsTable.from(it) }, isSuccess = true)
+            TasksRepoResponse(result = results.map { TasksTable.from(it) }, isSuccess = true)
         }, {
             TasksRepoResponse(result = emptyList(), isSuccess = false, listOf(ApiError(message = localizedMessage)))
         })
