@@ -15,7 +15,9 @@ abstract class TaskRepositoryReadTest {
 
     @Test
     fun readSuccess() {
-        val result = runBlocking { repo.read(TaskIdRequest()) }
+        val result = runBlocking { repo.read(TaskIdRequest(
+            initObjects.firstOrNull()?.id?.asUUID() ?: UUID.randomUUID()))
+        }
 
         assertEquals(true, result.isSuccess)
         assertEquals(readSuccessStub, result.result)
@@ -24,7 +26,7 @@ abstract class TaskRepositoryReadTest {
 
     @Test
     fun readNotFound() {
-        val result = runBlocking { repo.read(TaskIdRequest()) }
+        val result = runBlocking { repo.read(TaskIdRequest(UUID.randomUUID())) }
 
         assertEquals(false, result.isSuccess)
         assertEquals(null, result.result)
@@ -38,8 +40,8 @@ abstract class TaskRepositoryReadTest {
         override val initObjects: List<Task> = listOf(
             createInitTestModel("read")
         )
-        private val readSuccessStub = initObjects.first()
 
+        private val readSuccessStub = initObjects.first()
         val successId = readSuccessStub.id
         val notFoundId = TaskId(UUID.randomUUID())
 

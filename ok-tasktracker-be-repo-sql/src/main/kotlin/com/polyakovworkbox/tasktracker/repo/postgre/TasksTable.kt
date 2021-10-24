@@ -18,13 +18,13 @@ object TasksTable : Table("Tasks") {
     val id = uuid("id").uniqueIndex()
     val name = varchar("name", 128)
     val description = varchar("description", 1024)
-    var attainabilityDescription = varchar("description", 1024)
-    var relevanceDescription = varchar("description", 1024)
-    var measurabilityDescription = varchar("description", 1024)
+    var attainabilityDescription = varchar("attainabilityDescription", 1024)
+    var relevanceDescription = varchar("relevanceDescription", 1024)
+    var measurabilityDescription = varchar("measurabilityDescription", 1024)
     var progress = integer("progress")
     var dueTime = datetime("dueTime")
-    var parent = reference("parent_id", id)
-    var children = reference("child_id", id)
+    var parent = reference("parent_id", id).nullable()
+    var children = reference("child_id", id).nullable()
 
     override val primaryKey = PrimaryKey(id)
 
@@ -40,7 +40,7 @@ object TasksTable : Table("Tasks") {
         ),
         dueTime = DueTime(res[dueTime].atZone(ZoneId.of("UTC+03:00")).toInstant()),
         parent = TaskIdReference(res[parent]),
-        children = listOf(TaskIdReference(res[children]))
+        children = if(res[children] != null) listOf(TaskIdReference(res[children])) else emptyList()
     )
 
     fun from(res: ResultRow) = Task(
@@ -55,7 +55,7 @@ object TasksTable : Table("Tasks") {
         ),
         dueTime = DueTime(res[dueTime].atZone(ZoneId.of("UTC+03:00")).toInstant()),
         parent = TaskIdReference(res[parent]),
-        children = listOf(TaskIdReference(res[children]))
+        children = if(res[children] != null) listOf(TaskIdReference(res[children])) else emptyList()
     )
 
 }

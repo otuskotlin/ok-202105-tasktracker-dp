@@ -3,6 +3,7 @@ package com.polyakovworkbox.tasktracker.repo.postgre
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
+import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
 import com.polyakovworkbox.tasktracker.backend.common.repositories.TaskFilterRequest
 import com.polyakovworkbox.tasktracker.backend.common.repositories.TaskIdRequest
@@ -14,6 +15,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import kotlin.NoSuchElementException
 
@@ -29,10 +31,22 @@ class TaskRepoSql(
     private val db by lazy { SqlConnector(url, user, password, schema).connect(TasksTable) }
 
     init {
-        runBlocking {
             initObjects.forEach {
-                save(it)
-            }
+                safeTransaction({
+                    runBlocking {
+                        TasksTable.deleteWhere { TasksTable.id eq it.id.asUUID() }
+                        save(it)
+                    }
+                }, {
+                TaskRepoResponse(
+                    result = null,
+                    isSuccess = false,
+                    errors = listOf(
+                        ApiError(
+                            message = "cannot init")
+                    )
+                )
+            })
         }
     }
 
@@ -48,9 +62,9 @@ class TaskRepoSql(
                 it[relevanceDescription] = req.relevanceDescription.description
                 it[measurabilityDescription] = req.measurability.description.description
                 it[progress] = req.measurability.progress.percent
-                it[dueTime] = LocalDateTime.from(req.dueTime.dueTime)
+                it[dueTime] = LocalDateTime.ofInstant(req.dueTime.dueTime, ZoneId.of("UTC+03:00"))
                 it[parent] = req.parent.asUUID()
-                it[children] = req.children.singleOrNull()?.asUUID() ?: UUID.fromString("")
+                it[children] = req.children.singleOrNull()?.asUUID() ?: TaskIdReference.NONE.asUUID()
             }
 
             TaskRepoResponse(TasksTable.from(res), true)
@@ -96,9 +110,9 @@ class TaskRepoSql(
                 it[relevanceDescription] = task.relevanceDescription.description
                 it[measurabilityDescription] = task.measurability.description.description
                 it[progress] = task.measurability.progress.percent
-                it[dueTime] = LocalDateTime.from(task.dueTime.dueTime)
+                it[dueTime] = LocalDateTime.ofInstant(task.dueTime.dueTime, ZoneId.of("UTC+03:00"))
                 it[parent] = task.parent.asUUID()
-                it[children] = task.children.singleOrNull()?.asUUID() ?: UUID.fromString("")
+                it[children] = task.children.singleOrNull()?.asUUID() ?: TaskIdReference.NONE.asUUID()
             }
             val result = TasksTable.select { TasksTable.id.eq(task.id.asUUID()) }.single()
 

@@ -6,7 +6,7 @@ import java.util.*
 value class TaskIdReference (
     val id: String
 ) {
-    constructor(id: UUID) : this(id.toString())
+    constructor(id: UUID?) : this(id?.toString() ?: "")
 
     companion object {
         val NONE = TaskIdReference("")
@@ -14,6 +14,5 @@ value class TaskIdReference (
 
     fun asString() = id
 
-    fun asUUID(): UUID = UUID.fromString(id)
+    fun asUUID(): UUID? = if (id.isNotBlank()) UUID.fromString(id) else null
 }
-

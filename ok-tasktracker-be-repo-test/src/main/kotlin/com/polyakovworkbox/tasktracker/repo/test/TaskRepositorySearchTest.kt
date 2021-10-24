@@ -32,7 +32,7 @@ abstract class TaskRepositorySearchTest {
     companion object: BaseInitTasks() {
 
         override val initObjects: List<Task> = listOf(
-            createInitTestModel("ad1"),
+            createInitTestModel("someTaskForSearch"),
         )
     }
 }

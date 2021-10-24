@@ -14,5 +14,5 @@ value class TaskId(
 
     fun asString() = id
 
-    fun asUUID(): UUID = UUID.fromString(id)
+    fun asUUID(): UUID = if (id.isNotBlank()) UUID.fromString(id) else throw IllegalStateException()
 }

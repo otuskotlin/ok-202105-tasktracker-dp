@@ -29,6 +29,7 @@ abstract class TaskRepositoryCreateTest {
     companion object: BaseInitTasks() {
 
         private val createObj = Task(
+            id = TaskId("00000000-0000-0000-0000-000000000000"),
             name = Name("create object"),
             description = Description("create object description")
         )
