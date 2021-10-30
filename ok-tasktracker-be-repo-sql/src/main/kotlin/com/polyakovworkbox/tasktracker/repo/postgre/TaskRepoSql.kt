@@ -86,12 +86,7 @@ class TaskRepoSql(
 
     override suspend fun read(req: TaskIdRequest): TaskRepoResponse {
         return safeTransaction({
-
-            val res1 = TasksToChildrenTable.selectAll()
-
-            val result = TasksTable
-                .join(TasksToChildrenTable, JoinType.LEFT, additionalConstraint = { TasksTable.id eq TasksToChildrenTable.parent})
-                .select { TasksTable.id.eq(req.asUUID()) }.single()
+            val result = TasksTable.select { TasksTable.id.eq(req.asUUID()) }.single()
 
             TaskRepoResponse(TasksTable.from(result), true)
         }, {
