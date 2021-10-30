@@ -1,6 +1,7 @@
 package com.polyakovworkbox.tasktracker.repo.postgre
 
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
+import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
@@ -141,20 +142,40 @@ class TaskRepoSql(
         })
     }
 
-    //TODO this is complete bullshit - make normal search here
     override suspend fun search(req: TaskFilterRequest): TasksRepoResponse {
         return safeTransaction({
             // Select only if options are provided
             val results = (TasksTable).select {
-                (if (req.searchString.isBlank()) Op.TRUE else TasksTable.id eq UUID.fromString(req.searchString))
-/*                (if (req.ownerId == OwnerIdModel.NONE) Op.TRUE else TasksTable.ownerId eq req.asUUID()) and
-                        (if (req.dealSide == DealSideModel.NONE) Op.TRUE else AdsTable.dealSide eq req.dealSide)*/
+                (if(req.nameFilter?.isBlank() != false) Op.TRUE else TasksTable.name eq (req.nameFilter ?: ""))
+                (if(req.descriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.description eq (req.descriptionFilter ?: ""))
+                (if(req.attainabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.attainabilityDescription eq (req.attainabilityDescriptionFilter ?: ""))
+                (if(req.relevanceDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.relevanceDescription eq (req.relevanceDescriptionFilter ?: ""))
+                (if(req.measurabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.measurabilityDescription eq (req.measurabilityDescriptionFilter ?: ""))
+                (if(req.progressMarkFilter == null) Op.TRUE else {
+                    when(req.progressMarkFilterEquality) {
+                        EqualityMode.NONE,
+                        EqualityMode.EQUALS -> TasksTable.progress eq (req.progressMarkFilter ?: 0)
+                        EqualityMode.LESS_THAN -> TasksTable.progress less (req.progressMarkFilter ?: 0)
+                        EqualityMode.MORE_THAN -> TasksTable.progress greater (req.progressMarkFilter ?: 0)
+                    }
+                })
+                (if(req.dueTimeFilter == null) Op.TRUE else {
+                    when(req.dueTimeFilterEquality) {
+                        EqualityMode.NONE,
+                        EqualityMode.EQUALS -> TasksTable.dueTime eq (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                        EqualityMode.LESS_THAN -> TasksTable.dueTime less (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                        EqualityMode.MORE_THAN -> TasksTable.dueTime greater (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                    }
+                })
+                (if(req.parentIdFilter?.isBlank() != false) Op.TRUE else TasksTable.parent eq (UUID.fromString(req.parentIdFilter)))
+                (if(req.childIdFilter?.isBlank() != false) Op.TRUE else TasksTable.children eq (UUID.fromString(req.childIdFilter)))
             }
 
             TasksRepoResponse(result = results.map { TasksTable.from(it) }, isSuccess = true)
         }, {
             TasksRepoResponse(result = emptyList(), isSuccess = false, listOf(ApiError(message = localizedMessage)))
         })
+
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.polyakovworkbox.tasktracker.repo.inmemory
 
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
+import com.polyakovworkbox.tasktracker.backend.common.models.general.EqualityMode
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
@@ -155,22 +156,38 @@ class TaskRepoInMemory(
         )
     }
 
-    //TODO: Search through search string?
     override suspend fun search(req: TaskFilterRequest): TasksRepoResponse {
-/*        val results = cache.asFlow()
+
+        val results: List<Task> = cache.asFlow()
             .filter {
-                if (req.dealSide == DealSideModel.NONE) return@filter true
-                req.dealSide.name == it.value.dealSide
-            }
-            .map { it.value.toInternal() }
-            .toList()
+                req.nameFilter == null || it.value.name == req.nameFilter
+            }.filter {
+                req.descriptionFilter == null || it.value.description == req.descriptionFilter
+            }.filter {
+                req.attainabilityDescriptionFilter == null || it.value.attainabilityDescription == req.attainabilityDescriptionFilter
+            }.filter {
+                req.relevanceDescriptionFilter == null || it.value.relevanceDescription == req.relevanceDescriptionFilter
+            }.filter {
+                req.measurabilityDescriptionFilter == null || it.value.measurabilityDescription == req.measurabilityDescriptionFilter
+            }.filter {
+                req.progressMarkFilter == null ||
+                    (req.progressMarkFilterEquality == EqualityMode.EQUALS && it.value.progress == req.progressMarkFilter) ||
+                    (req.progressMarkFilterEquality == EqualityMode.LESS_THAN && (it.value.progress ?: 0) < (req.progressMarkFilter ?: 0)) ||
+                    (req.progressMarkFilterEquality == EqualityMode.MORE_THAN && (it.value.progress ?: 0) > (req.progressMarkFilter ?: 0))
+            }.filter {
+                req.dueTimeFilter == null ||
+                    (req.dueTimeFilterEquality == EqualityMode.EQUALS && it.value.dueTime == req.dueTimeFilter) ||
+                    (req.dueTimeFilterEquality == EqualityMode.LESS_THAN && it.value.dueTime < req.dueTimeFilter) ||
+                    (req.dueTimeFilterEquality == EqualityMode.MORE_THAN && it.value.dueTime > req.dueTimeFilter)
+            }.filter {
+                req.parentIdFilter == null || it.value.parent == req.parentIdFilter
+            }.filter {
+                req.childIdFilter == null || it.value.children.contains(req.childIdFilter)
+            }.map { it.value.toInternal() }.toList()
+
         return TasksRepoResponse(
             result = results,
-            isSuccess = true
-        )*/
-        return TasksRepoResponse(
-            result = emptyList(),
-            isSuccess = true
+            isSuccess = true,
         )
     }
 }
