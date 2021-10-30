@@ -59,3 +59,8 @@ object TasksTable : Table("Tasks") {
     )
 
 }
+
+object TasksToChildrenTable : Table("TasksToChildrenTable") {
+    val parent = reference("parent_task_id", TasksTable.id)
+    val child = reference("child_task_id", TasksTable.id)
+}

@@ -12,7 +12,7 @@ abstract class TaskRepositorySearchTest {
     abstract val repo: ITaskRepo
 
     @Test
-    fun searchOwner() {
+    fun searchFound() {
         val result = runBlocking { repo.search(TaskFilterRequest()) }
         assertEquals(true, result.isSuccess)
         val expected = listOf(initObjects[1], initObjects[3])
@@ -21,7 +21,7 @@ abstract class TaskRepositorySearchTest {
     }
 
     @Test
-    fun searchDealSide() {
+    fun searchNotFound() {
         val result = runBlocking { repo.search(TaskFilterRequest()) }
         assertEquals(true, result.isSuccess)
         val expected = listOf(initObjects[2], initObjects[4])
