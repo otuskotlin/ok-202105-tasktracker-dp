@@ -145,30 +145,39 @@ class TaskRepoSql(
     override suspend fun search(req: TaskFilterRequest): TasksRepoResponse {
         return safeTransaction({
             // Select only if options are provided
-            val results = (TasksTable).select {
-                (if(req.nameFilter?.isBlank() != false) Op.TRUE else TasksTable.name eq (req.nameFilter ?: ""))
-                (if(req.descriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.description eq (req.descriptionFilter ?: ""))
-                (if(req.attainabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.attainabilityDescription eq (req.attainabilityDescriptionFilter ?: ""))
-                (if(req.relevanceDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.relevanceDescription eq (req.relevanceDescriptionFilter ?: ""))
-                (if(req.measurabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.measurabilityDescription eq (req.measurabilityDescriptionFilter ?: ""))
-                (if(req.progressMarkFilter == null) Op.TRUE else {
-                    when(req.progressMarkFilterEquality) {
-                        EqualityMode.NONE,
-                        EqualityMode.EQUALS -> TasksTable.progress eq (req.progressMarkFilter ?: 0)
-                        EqualityMode.LESS_THAN -> TasksTable.progress less (req.progressMarkFilter ?: 0)
-                        EqualityMode.MORE_THAN -> TasksTable.progress greater (req.progressMarkFilter ?: 0)
-                    }
-                })
-                (if(req.dueTimeFilter == null) Op.TRUE else {
-                    when(req.dueTimeFilterEquality) {
-                        EqualityMode.NONE,
-                        EqualityMode.EQUALS -> TasksTable.dueTime eq (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
-                        EqualityMode.LESS_THAN -> TasksTable.dueTime less (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
-                        EqualityMode.MORE_THAN -> TasksTable.dueTime greater (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
-                    }
-                })
-                (if(req.parentIdFilter?.isBlank() != false) Op.TRUE else TasksTable.parent eq (UUID.fromString(req.parentIdFilter)))
-                (if(req.childIdFilter?.isBlank() != false) Op.TRUE else TasksTable.children eq (UUID.fromString(req.childIdFilter)))
+            val results = (TasksTable).select { (
+                    (if(req.nameFilter?.isBlank() != false) Op.TRUE else TasksTable.name eq (req.nameFilter ?: ""))
+                ).and(
+                    (if(req.descriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.description eq (req.descriptionFilter ?: ""))
+                ).and(
+                    (if(req.attainabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.attainabilityDescription eq (req.attainabilityDescriptionFilter ?: ""))
+                ).and(
+                    (if(req.relevanceDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.relevanceDescription eq (req.relevanceDescriptionFilter ?: ""))
+                ).and(
+                    (if(req.measurabilityDescriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.measurabilityDescription eq (req.measurabilityDescriptionFilter ?: ""))
+                ).and(
+                    (if(req.progressMarkFilter == null) Op.TRUE else {
+                        when(req.progressMarkFilterEquality) {
+                            EqualityMode.NONE,
+                            EqualityMode.EQUALS -> TasksTable.progress eq (req.progressMarkFilter ?: 0)
+                            EqualityMode.LESS_THAN -> TasksTable.progress less (req.progressMarkFilter ?: 0)
+                            EqualityMode.MORE_THAN -> TasksTable.progress greater (req.progressMarkFilter ?: 0)
+                        }
+                    })
+                ).and(
+                    (if(req.dueTimeFilter == null) Op.TRUE else {
+                        when(req.dueTimeFilterEquality) {
+                            EqualityMode.NONE,
+                            EqualityMode.EQUALS -> TasksTable.dueTime eq (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                            EqualityMode.LESS_THAN -> TasksTable.dueTime less (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                            EqualityMode.MORE_THAN -> TasksTable.dueTime greater (LocalDateTime.ofInstant(req.dueTimeFilter, ZoneId.of("UTC+03:00")))
+                        }
+                    })
+                ).and(
+                    (if(req.parentIdFilter?.isBlank() != false) Op.TRUE else TasksTable.parent eq (UUID.fromString(req.parentIdFilter)))
+                ).and(
+                    (if(req.childIdFilter?.isBlank() != false) Op.TRUE else TasksTable.children eq (UUID.fromString(req.childIdFilter)))
+                )
             }
 
             TasksRepoResponse(result = results.map { TasksTable.from(it) }, isSuccess = true)

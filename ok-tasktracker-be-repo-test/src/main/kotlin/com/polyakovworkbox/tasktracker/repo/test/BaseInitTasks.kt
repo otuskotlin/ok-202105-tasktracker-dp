@@ -25,7 +25,6 @@ abstract class BaseInitTasks : IInitObjects<Task> {
         name = Name("$name stub"),
         description = Description("$name stub description"),
         measurability = Measurability(
-            description = Description("Half-done"),
             progress = Percent(50)
         )
 
