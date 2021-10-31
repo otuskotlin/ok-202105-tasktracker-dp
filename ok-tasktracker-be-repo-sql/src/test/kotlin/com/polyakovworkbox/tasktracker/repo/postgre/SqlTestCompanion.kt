@@ -8,8 +8,8 @@ class PostgresContainer : PostgreSQLContainer<PostgresContainer>("postgres:13.2"
 
 object SqlTestCompanion {
     private const val USER = "postgres"
-    private const val PASS = "marketplace-pass"
-    private const val SCHEMA = "marketplace"
+    private const val PASS = "tasktracker-pass"
+    private const val SCHEMA = "tasktrackerdevdb"
 
     private val container by lazy {
         PostgresContainer().apply {
