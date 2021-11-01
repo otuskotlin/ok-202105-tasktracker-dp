@@ -1,13 +1,16 @@
 package com.polyakovworkbox.tasktracker.backend.logics
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
+import com.polyakovworkbox.tasktracker.backend.common.context.ContextConfig
 import com.polyakovworkbox.tasktracker.backend.logics.chains.TaskCreate
 import com.polyakovworkbox.tasktracker.backend.logics.chains.TaskDelete
 import com.polyakovworkbox.tasktracker.backend.logics.chains.TaskRead
 import com.polyakovworkbox.tasktracker.backend.logics.chains.TaskSearch
 import com.polyakovworkbox.tasktracker.backend.logics.chains.TaskUpdate
 
-class TaskCrud {
+class TaskCrud(
+    val config: ContextConfig = ContextConfig()
+) {
     suspend fun create(context: BeContext) {
         TaskCreate.exec(context.setSettings())
     }
@@ -25,6 +28,6 @@ class TaskCrud {
     }
 
     private fun BeContext.setSettings() = apply {
-        // introduce additional settings (like repository etc.) if required here
+        config = this@TaskCrud.config
     }
 }

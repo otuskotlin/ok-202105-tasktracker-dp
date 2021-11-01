@@ -73,24 +73,7 @@ Content-Type: application/json
     "nameFilter": "The Lord of the Rings"
   },
   "debug": {
-    "mode": "test",
-    "stub": "success"
-  }
-}
-
-###
-POST http://localhost:8080/task/create
-Content-Type: application/json
-
-{
-  "messageType": "CreateTaskRequest",
-  "requestId": "1234567890",
-  "task": {
-    "name": "some name",
-    "description": "some description"
-  },
-  "debug": {
-    "mode": "test",
+    "mode": "testdb",
     "stub": "success"
   }
 }
