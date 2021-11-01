@@ -13,6 +13,7 @@ import com.polyakovworkbox.tasktracker.backend.common.repositories.TaskRepoRespo
 import com.polyakovworkbox.tasktracker.backend.common.repositories.TasksRepoResponse
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
 import java.time.LocalDateTime
@@ -57,15 +58,7 @@ class TaskRepoSql(
                 if (req.id != TaskId.NONE) {
                     it[id] = req.id.asUUID()
                 }
-                it[name] = req.name.name
-                it[description] = req.description.description
-                it[attainabilityDescription] = req.attainabilityDescription.description
-                it[relevanceDescription] = req.relevanceDescription.description
-                it[measurabilityDescription] = req.measurability.description.description
-                it[progress] = req.measurability.progress.percent
-                it[dueTime] = LocalDateTime.ofInstant(req.dueTime.dueTime, ZoneId.of("UTC+03:00"))
-                it[parent] = req.parent.asUUID()
-                it[children] = req.children.singleOrNull()?.asUUID() ?: TaskIdReference.NONE.asUUID()
+                mapToTableUnit(it, req)
             }
 
             TaskRepoResponse(TasksTable.from(res), true)
@@ -105,15 +98,7 @@ class TaskRepoSql(
         return safeTransaction({
 
             TasksTable.update({ TasksTable.id.eq(task.id.asUUID()) }) {
-                it[name] = task.name.name
-                it[description] = task.description.description
-                it[attainabilityDescription] = task.attainabilityDescription.description
-                it[relevanceDescription] = task.relevanceDescription.description
-                it[measurabilityDescription] = task.measurability.description.description
-                it[progress] = task.measurability.progress.percent
-                it[dueTime] = LocalDateTime.ofInstant(task.dueTime.dueTime, ZoneId.of("UTC+03:00"))
-                it[parent] = task.parent.asUUID()
-                it[children] = task.children.singleOrNull()?.asUUID() ?: TaskIdReference.NONE.asUUID()
+                mapToTableUnit(it, task)
             }
             val result = TasksTable.select { TasksTable.id.eq(task.id.asUUID()) }.single()
 
@@ -185,6 +170,21 @@ class TaskRepoSql(
             TasksRepoResponse(result = emptyList(), isSuccess = false, listOf(ApiError(message = localizedMessage)))
         })
 
+    }
+
+    private fun TasksTable.mapToTableUnit(
+        it: UpdateBuilder<Int>,
+        req: Task
+    ) {
+        it[name] = req.name.name
+        it[description] = req.description.description
+        it[attainabilityDescription] = req.attainabilityDescription.description
+        it[relevanceDescription] = req.relevanceDescription.description
+        it[measurabilityDescription] = req.measurability.description.description
+        it[progress] = req.measurability.progress.percent
+        it[dueTime] = LocalDateTime.ofInstant(req.dueTime.dueTime, ZoneId.of("UTC+03:00"))
+        it[parent] = req.parent.asUUID()
+        it[children] = req.children.singleOrNull()?.asUUID() ?: TaskIdReference.NONE.asUUID()
     }
 
     /**
