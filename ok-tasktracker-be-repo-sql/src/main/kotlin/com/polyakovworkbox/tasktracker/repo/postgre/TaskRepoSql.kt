@@ -55,9 +55,6 @@ class TaskRepoSql(
     private suspend fun save(req: Task): TaskRepoResponse {
         return safeTransaction({
             val res = TasksTable.insert {
-                if (req.id != TaskId.NONE) {
-                    it[id] = req.id.asUUID()
-                }
                 mapToTableUnit(it, req)
             }
 
@@ -176,6 +173,9 @@ class TaskRepoSql(
         it: UpdateBuilder<Int>,
         req: Task
     ) {
+        if(req.id != TaskId.NONE) {
+            it[id] = req.id.asUUID()
+        }
         it[name] = req.name.name
         it[description] = req.description.description
         it[attainabilityDescription] = req.attainabilityDescription.description
