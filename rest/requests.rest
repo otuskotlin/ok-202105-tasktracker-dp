@@ -10,7 +10,7 @@ Content-Type: application/json
     "description": "some description"
   },
   "debug": {
-    "mode": "test",
+    "mode": "stub",
     "stub": "success"
   }
 }
@@ -24,7 +24,7 @@ Content-Type: application/json
   "requestId": "1234567890",
   "id": "1",
   "debug": {
-    "mode": "test",
+    "mode": "stub",
     "stub": "success"
   }
 }
@@ -43,7 +43,7 @@ Content-Type: application/json
     "dueTime": "2021-08-23T18:25:43.511Z"
   },
   "debug": {
-    "mode": "test",
+    "mode": "stub",
     "stub": "success"
   }
 }
@@ -57,7 +57,7 @@ Content-Type: application/json
   "requestId": "1234567890",
   "id": "1",
   "debug": {
-    "mode": "test",
+    "mode": "stub",
     "stub": "success"
   }
 }
@@ -73,7 +73,7 @@ Content-Type: application/json
     "nameFilter": "The Lord of the Rings"
   },
   "debug": {
-    "mode": "testdb",
+    "mode": "test",
     "stub": "success"
   }
 }

@@ -29,13 +29,13 @@ internal class TransportToContextTest {
     @Test
     fun `Debug mapping - debug mode is used`() {
         val debug = Debug(
-            mode = Debug.Mode.TEST,
+            mode = Debug.Mode.STUB,
             stub = Debug.Stub.SUCCESS
         )
 
         val debugDomain = DebugDomain().mapFrom(debug)
 
-        assertEquals(debugDomain.mode, ModeDomain.TEST)
+        assertEquals(debugDomain.mode, ModeDomain.STUB)
         assertEquals(debugDomain.stub, StubDomain.SUCCESS)
     }
 

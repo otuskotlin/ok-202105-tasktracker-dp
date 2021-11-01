@@ -12,8 +12,8 @@ internal fun CorChainDsl<BeContext>.selectDB(title: String) = worker {
     handle {
         taskRepo = when (debug.mode) {
             Mode.PROD -> config.repoProd
-            Mode.TESTDB -> config.repoTest
-            Mode.TEST -> {
+            Mode.TEST -> config.repoTest
+            Mode.STUB -> {
                 if (debug.stub == Stub.NONE) {
                     debug.stub = Stub.SUCCESS
                 }

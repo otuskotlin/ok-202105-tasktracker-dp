@@ -71,8 +71,8 @@ fun DebugDomain.mapFrom(from: Debug?) : DebugDomain {
         val validatedMode =
             when (mode) {
                 Debug.Mode.PROD -> Mode.PROD
+                Debug.Mode.STUB -> Mode.STUB
                 Debug.Mode.TEST -> Mode.TEST
-                Debug.Mode.TESTDB -> Mode.TESTDB
             }
         val validatedStub =
             when (from.stub) {
@@ -81,7 +81,7 @@ fun DebugDomain.mapFrom(from: Debug?) : DebugDomain {
                 Debug.Stub.SUCCESS -> Stub.SUCCESS
                 Debug.Stub.ERROR_DB -> Stub.ERROR_DB
             }
-        if (validatedMode != Mode.TEST) {
+        if (validatedMode != Mode.STUB) {
             DebugDomain(validatedMode, Stub.NONE)
         } else {
             DebugDomain(validatedMode, validatedStub)
