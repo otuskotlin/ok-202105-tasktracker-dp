@@ -4,6 +4,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Debug
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
+import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
 import com.polyakovworkbox.tasktracker.backend.common.models.general.RequestId
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ResponseId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
@@ -18,6 +19,8 @@ data class BeContext(
 
     var requestId: RequestId = RequestId.NONE,
     var debug: Debug = Debug.DEFAULT,
+
+    var principal: Principal = Principal.NONE,
 
     var config: ContextConfig = ContextConfig(),
     var taskRepo: ITaskRepo = ITaskRepo.NONE,
@@ -34,7 +37,7 @@ data class BeContext(
     var responseId: ResponseId = ResponseId.NONE,
     var errors: MutableList<ApiError> = mutableListOf(),
 
-) {
+    ) {
     fun addError(e: Throwable, isErrorStatus: Boolean = true) {
         errors.add(ApiError(e))
         if(isErrorStatus) status = ResponseStatus.ERROR

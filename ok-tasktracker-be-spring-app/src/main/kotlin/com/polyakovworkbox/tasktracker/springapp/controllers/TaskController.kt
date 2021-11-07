@@ -13,9 +13,11 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
-import com.polyakovworkbox.tasktracker.springapp.async.KafkaProducer
+import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -30,6 +32,10 @@ class TaskController(
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        context.principal = Principal(user.username)
+
         context.operation = Operation.CREATE
 
         return try {
@@ -42,6 +48,10 @@ class TaskController(
     @PostMapping("read")
     fun readTask(@RequestBody request: ReadTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        context.principal = Principal(user.username)
+
         context.operation = Operation.READ
 
         return try {
@@ -55,6 +65,10 @@ class TaskController(
     @PostMapping("update")
     fun updateTask(@RequestBody request: UpdateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        context.principal = Principal(user.username)
+
         context.operation = Operation.UPDATE
 
         return try {
@@ -67,6 +81,10 @@ class TaskController(
     @PostMapping("delete")
     fun deleteTask(@RequestBody request: DeleteTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        context.principal = Principal(user.username)
+
         context.operation = Operation.DELETE
 
         return try {
@@ -79,6 +97,10 @@ class TaskController(
     @PostMapping("search")
     fun searchTask(@RequestBody request: SearchTasksRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        context.principal = Principal(user.username)
+
         context.operation = Operation.SEARCH
 
         return try {

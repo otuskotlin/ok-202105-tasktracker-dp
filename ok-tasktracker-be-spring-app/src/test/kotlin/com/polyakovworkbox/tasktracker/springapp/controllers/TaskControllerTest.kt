@@ -45,7 +45,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: CreateTaskResponse = restTemplate.postForObject(
+        val response: CreateTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/create",
             request,
             CreateTaskResponse::class.java
@@ -66,7 +68,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: CreateTaskResponse = restTemplate.postForObject(
+        val response: CreateTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/create",
             request,
             CreateTaskResponse::class.java
@@ -86,7 +90,9 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: ReadTaskResponse = restTemplate.postForObject(
+        val response: ReadTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/read",
             request,
             ReadTaskResponse::class.java
@@ -104,7 +110,9 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: ReadTaskResponse = restTemplate.postForObject(
+        val response: ReadTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/read",
             request,
             ReadTaskResponse::class.java
@@ -129,7 +137,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: UpdateTaskResponse = restTemplate.postForObject(
+        val response: UpdateTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/update",
             request,
             UpdateTaskResponse::class.java
@@ -152,7 +162,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: UpdateTaskResponse = restTemplate.postForObject(
+        val response: UpdateTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/update",
             request,
             UpdateTaskResponse::class.java
@@ -171,7 +183,9 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: DeleteTaskResponse = restTemplate.postForObject(
+        val response: DeleteTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/delete",
             request,
             DeleteTaskResponse::class.java
@@ -189,7 +203,9 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: DeleteTaskResponse = restTemplate.postForObject(
+        val response: DeleteTaskResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/delete",
             request,
             DeleteTaskResponse::class.java
@@ -210,7 +226,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: SearchTasksResponse = restTemplate.postForObject(
+        val response: SearchTasksResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/search",
             request,
             SearchTasksResponse::class.java
@@ -231,7 +249,9 @@ class TaskControllerTest {
             )
         )
 
-        val response: SearchTasksResponse = restTemplate.postForObject(
+        val response: SearchTasksResponse = restTemplate
+            .withBasicAuth("taskUser", "taskUserPass")
+            .postForObject(
             "http://localhost:${port}/task/search",
             request,
             SearchTasksResponse::class.java
