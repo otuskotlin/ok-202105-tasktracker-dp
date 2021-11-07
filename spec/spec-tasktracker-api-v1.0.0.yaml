@@ -265,9 +265,9 @@ components:
         mode:
           type: string
           default: 'prod'
-          enum: [prod, test, testdb]
+          enum: [prod, stub, test]
         stub:
-          description: if mode is set to prod or testdb any value of stub except none will be ignored
+          description: if mode is set to prod or test any value of stub except none will be ignored
           type: string
           enum: [none, success, errorDb]
 

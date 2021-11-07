@@ -38,7 +38,7 @@ class TaskControllerTest {
     fun `create stub success`() {
         val request = CreateTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             task = CreatableTask(
                 name = "some name",
                 description = "some description"
@@ -59,7 +59,7 @@ class TaskControllerTest {
     fun `create stub error`() {
         val request = CreateTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             task = CreatableTask(
                 name = "some name",
                 description = "some description"
@@ -82,7 +82,7 @@ class TaskControllerTest {
     fun `read stub success`() {
         val request = ReadTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             id = "1"
         )
 
@@ -100,7 +100,7 @@ class TaskControllerTest {
     fun `read stub error`() {
         val request = ReadTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             id = "1"
         )
 
@@ -120,7 +120,7 @@ class TaskControllerTest {
     fun `update stub success`() {
         val request = UpdateTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             task = UpdatableTask(
                 id = "1",
                 name = "some name",
@@ -143,7 +143,7 @@ class TaskControllerTest {
     fun `update stub error`() {
         val request = UpdateTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             task = UpdatableTask(
                 id = "1",
                 name = "some name",
@@ -167,7 +167,7 @@ class TaskControllerTest {
     fun `delete stub success`() {
         val request = DeleteTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             id = "1"
         )
 
@@ -185,7 +185,7 @@ class TaskControllerTest {
     fun `delete stub error`() {
         val request = DeleteTaskRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             id = "1"
         )
 
@@ -204,7 +204,7 @@ class TaskControllerTest {
     fun `search stub success`() {
         val request = SearchTasksRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             searchFilter = SearchFilter(
                 nameFilter = "The Lord of the Rings"
             )
@@ -225,7 +225,7 @@ class TaskControllerTest {
     fun `search stub error`() {
         val request = SearchTasksRequest(
             requestId = "1234567890",
-            debug = Debug(Debug.Mode.TEST, Debug.Stub.ERROR_DB),
+            debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             searchFilter = SearchFilter(
                 nameFilter = "The Lord of the Rings"
             )

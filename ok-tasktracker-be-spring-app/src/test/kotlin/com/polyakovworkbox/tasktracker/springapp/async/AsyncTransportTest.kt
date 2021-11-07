@@ -46,7 +46,7 @@ class AsyncTransportTest {
         val request = objectMapper.writeValueAsString(
             CreateTaskRequest(
                 requestId = "1234567890",
-                debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+                debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 task = CreatableTask(
                     name = "some name",
                     description = "some description"
@@ -73,7 +73,7 @@ class AsyncTransportTest {
         val request = objectMapper.writeValueAsString(
             ReadTaskRequest(
                 requestId = "1234567890",
-                debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+                debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 id = "1"
             )
         )
@@ -97,7 +97,7 @@ class AsyncTransportTest {
         val request = objectMapper.writeValueAsString(
             UpdateTaskRequest(
                 requestId = "1234567890",
-                debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+                debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 task = UpdatableTask(
                     id = "1",
                     name = "some name",
@@ -126,7 +126,7 @@ class AsyncTransportTest {
         val request = objectMapper.writeValueAsString(
             DeleteTaskRequest(
                 requestId = "1234567890",
-                debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+                debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 id = "1"
             )
         )
@@ -150,7 +150,7 @@ class AsyncTransportTest {
         val request = objectMapper.writeValueAsString(
             SearchTasksRequest(
                 requestId = "1234567890",
-                debug = Debug(Debug.Mode.TEST, Debug.Stub.SUCCESS),
+                debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 searchFilter = SearchFilter(
                     nameFilter = "The Lord of the Rings"
                 )

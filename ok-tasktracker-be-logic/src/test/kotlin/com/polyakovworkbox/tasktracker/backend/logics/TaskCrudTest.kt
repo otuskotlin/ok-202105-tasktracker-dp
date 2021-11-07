@@ -19,7 +19,7 @@ class TaskCrudTest {
         val context = BeContext(
             requestTask = TaskStub.getModel(),
             debug = Debug(
-                mode = Mode.TEST,
+                mode = Mode.STUB,
                 stub = Stub.SUCCESS
             ),
             operation = Operation.CREATE
