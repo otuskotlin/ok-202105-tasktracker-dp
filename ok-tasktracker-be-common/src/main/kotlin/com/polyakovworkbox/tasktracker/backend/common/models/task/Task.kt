@@ -2,6 +2,7 @@ package com.polyakovworkbox.tasktracker.backend.common.models.task
 
 data class Task(
     var id: TaskId = TaskId.NONE,
+    var ownerId: OwnerId = OwnerId.NONE,
     var name: Name = Name.NONE,
     var description: Description = Description.NONE,
     var attainabilityDescription: Description = Description.NONE,

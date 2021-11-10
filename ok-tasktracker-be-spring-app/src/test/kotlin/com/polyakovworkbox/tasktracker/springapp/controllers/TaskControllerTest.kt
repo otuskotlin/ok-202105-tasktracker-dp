@@ -1,5 +1,7 @@
 package com.polyakovworkbox.tasktracker.springapp.controllers
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreatableTask
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskResponse
@@ -23,6 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import java.util.*
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,26 +41,42 @@ class TaskControllerTest {
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
+    private val om = ObjectMapper().registerKotlinModule()
+
     @Test
     fun `create stub success`() {
+        val headers = HttpHeaders()
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        headers.set("X-TP-DeviceID", "your value")
+
         val request = CreateTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             task = CreatableTask(
                 name = "some name",
+                ownerId = "00560000-0000-0000-0000-000000000001",
                 description = "some description"
             )
         )
 
-        val response: CreateTaskResponse = restTemplate
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), headers)
+
+        val response: CreateTaskResponse? = restTemplate
             .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
+            .exchange(
+            "http://localhost:${port}/task/create",
+            HttpMethod.POST,
+            entity,
+            CreateTaskResponse::class.java
+        ).body
+/*            .postForObject(
             "http://localhost:${port}/task/create",
             request,
             CreateTaskResponse::class.java
-        )
+        )*/
 
-        assertEquals(ResponseResult.SUCCESS, response.result)
+        assertEquals(ResponseResult.SUCCESS, response!!.result)
         assertEquals("""read "The Lord of the Rings"""", response.task?.name)
     }
 
@@ -64,6 +87,7 @@ class TaskControllerTest {
             debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             task = CreatableTask(
                 name = "some name",
+                ownerId = "00560000-0000-0000-0000-000000000001",
                 description = "some description"
             )
         )
@@ -131,6 +155,7 @@ class TaskControllerTest {
             debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
             task = UpdatableTask(
                 id = "1",
+                ownerId = "00560000-0000-0000-0000-000000000001",
                 name = "some name",
                 description = "some description",
                 dueTime = "2021-08-23T18:25:43.511Z"
@@ -156,6 +181,7 @@ class TaskControllerTest {
             debug = Debug(Debug.Mode.STUB, Debug.Stub.ERROR_DB),
             task = UpdatableTask(
                 id = "1",
+                ownerId = "00560000-0000-0000-0000-000000000001",
                 name = "some name",
                 description = "some description",
                 dueTime = "2021-08-23T18:25:43.511Z"

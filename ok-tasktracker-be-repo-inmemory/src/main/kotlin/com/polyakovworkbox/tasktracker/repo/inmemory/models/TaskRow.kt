@@ -5,6 +5,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
@@ -14,6 +15,7 @@ import java.time.Instant
 data class TaskRow(
     val id: String? = null,
     val name: String? = null,
+    val ownerId: String? = null,
     val description: String? = null,
     var attainabilityDescription: String? = null,
     var relevanceDescription: String? = null,
@@ -25,6 +27,7 @@ data class TaskRow(
 ): Serializable {
     constructor(internal: Task): this(
         id = internal.id.id.takeIf { it.isNotBlank() },
+        ownerId = internal.ownerId.id.takeIf { it.isNotBlank() },
         name = internal.name.name.takeIf { it.isNotBlank() },
         description = internal.description.description.takeIf { it.isNotBlank() },
         attainabilityDescription = internal.attainabilityDescription.description.takeIf { it.isNotBlank() },
@@ -38,6 +41,7 @@ data class TaskRow(
 
     fun toInternal(): Task = Task(
         id = id?.let { TaskId(it) } ?: TaskId.NONE,
+        ownerId = ownerId?.let { OwnerId(it) } ?: OwnerId.NONE,
         name = name?.let { Name(it) } ?: Name.NONE,
         description = description?.let { Description(it) } ?: Description.NONE,
         attainabilityDescription = attainabilityDescription?.let { Description(it) } ?: Description.NONE,

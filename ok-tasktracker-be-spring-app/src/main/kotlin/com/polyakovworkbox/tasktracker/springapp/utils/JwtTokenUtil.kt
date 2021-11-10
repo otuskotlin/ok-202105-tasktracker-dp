@@ -2,6 +2,8 @@ package com.polyakovworkbox.tasktracker.springapp.utils
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
+import com.polyakovworkbox.tasktracker.stubs.TaskStub
 import java.util.*
 
 fun AuthConst.Companion.testUserToken(): String = testToken("TEST", "USER")
@@ -15,7 +17,7 @@ private fun testToken(vararg groups: String) = JWT.create()
     )
     .withAudience(AuthConst.TEST.audience)
     .withIssuer(AuthConst.TEST.issuer)
-    //.withClaim(AuthConst.ID_CLAIM, Bolt.owner.asString())
+    .withClaim(AuthConst.ID_CLAIM, TaskStub.getModel().ownerId.asString())
     .withClaim(AuthConst.F_NAME_CLAIM, "Ivan")
     .withClaim(AuthConst.M_NAME_CLAIM, "I.")
     .withClaim(AuthConst.L_NAME_CLAIM, "Ivanov")

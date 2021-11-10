@@ -21,6 +21,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime as Due
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability as MeasurabilityDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Debug as DebugDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
@@ -93,6 +94,7 @@ fun Task.mapFrom(task: CreatableTask?) : Task {
     if(task == null) throw IllegalArgumentException()
 
     name = name.mapFrom(task.name)
+    ownerId = ownerId.mapFrom(task.ownerId)
     description = description.mapFrom(task.description)
     attainabilityDescription = attainabilityDescription.mapFrom(task.attainabilityDescription)
     relevanceDescription = relevanceDescription.mapFrom(task.relevanceDescription)
@@ -108,6 +110,7 @@ fun Task.mapFrom(task: UpdatableTask?) : Task {
     if(task == null) throw IllegalArgumentException()
 
     id = id.mapFrom(task.id)
+    ownerId = ownerId.mapFrom(task.ownerId)
     name = name.mapFrom(task.name)
     description = description.mapFrom(task.description)
     attainabilityDescription = attainabilityDescription.mapFrom(task.attainabilityDescription)
@@ -146,6 +149,9 @@ private fun List<TaskIdReference>.mapFrom(children: List<String>?) : List<TaskId
 
 private fun TaskId.mapFrom(id: String?) : TaskId =
     TaskId(id ?: throw IllegalArgumentException())
+
+private fun OwnerId.mapFrom(id: String?) : OwnerId =
+    OwnerId(id ?: throw IllegalArgumentException())
 
 private fun TaskIdReference.mapFrom(id: String?) : TaskIdReference =
     if(id == null) TaskIdReference.NONE else TaskIdReference(id)

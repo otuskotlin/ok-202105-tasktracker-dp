@@ -275,6 +275,8 @@ components:
       description: represents every task with all its business logic related properties
       type: object
       properties:
+        ownerId:
+          type: string
         name:
           type: string
         description:
@@ -296,6 +298,7 @@ components:
           items:
             type: string
       required:
+        - ownerId
         - name
 
     UpdatableTask:

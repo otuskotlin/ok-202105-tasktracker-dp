@@ -15,7 +15,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.inMemoryAuthentication()
             .withUser("taskUser").password(passwordEncoder().encode("taskUserPass"))
-            .authorities("ROLE_USER");
+            .authorities("ROLE_USER")
     }
 
     override fun configure(http: HttpSecurity) {
@@ -23,7 +23,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .csrf().disable()
             .authorizeRequests().anyRequest().authenticated()
             .and().httpBasic()
-            .and().sessionManagement().disable();
+            .and().sessionManagement().disable()
+            .oauth2ResourceServer().jwt()
     }
 
     @Bean

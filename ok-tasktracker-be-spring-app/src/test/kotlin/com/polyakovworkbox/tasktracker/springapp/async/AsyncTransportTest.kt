@@ -49,6 +49,7 @@ class AsyncTransportTest {
                 debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 task = CreatableTask(
                     name = "some name",
+                    ownerId = "00560000-0000-0000-0000-000000000001",
                     description = "some description"
                 )
             )
@@ -100,6 +101,7 @@ class AsyncTransportTest {
                 debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
                 task = UpdatableTask(
                     id = "1",
+                    ownerId = "00560000-0000-0000-0000-000000000001",
                     name = "some name",
                     description = "some description",
                     dueTime = "2021-08-23T18:25:43.511Z"
