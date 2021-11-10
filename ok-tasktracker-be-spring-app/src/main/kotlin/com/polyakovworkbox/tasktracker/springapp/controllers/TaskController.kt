@@ -16,8 +16,11 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
+import org.keycloak.KeycloakPrincipal
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,6 +32,7 @@ import java.time.Instant
 class TaskController(
     val taskService: TaskService
 ) {
+
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
@@ -49,8 +53,8 @@ class TaskController(
     fun readTask(@RequestBody request: ReadTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        context.principal = Principal(user.username)
+        val user = SecurityContextHolder.getContext().authentication.principal as KeycloakPrincipal<*>
+        context.principal = Principal(user.name)
 
         context.operation = Operation.READ
 

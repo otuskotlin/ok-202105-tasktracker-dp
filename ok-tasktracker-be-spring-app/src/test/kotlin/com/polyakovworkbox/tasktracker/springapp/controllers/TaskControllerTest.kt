@@ -48,7 +48,6 @@ class TaskControllerTest {
         val headers = HttpHeaders()
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
         headers.setContentType(MediaType.APPLICATION_JSON)
-        headers.set("X-TP-DeviceID", "your value")
 
         val request = CreateTaskRequest(
             requestId = "1234567890",
@@ -63,7 +62,6 @@ class TaskControllerTest {
         val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), headers)
 
         val response: CreateTaskResponse? = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
             .exchange(
             "http://localhost:${port}/task/create",
             HttpMethod.POST,

@@ -21,6 +21,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.keycloak:keycloak-spring-boot-starter:15.0.2")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.5.6")
