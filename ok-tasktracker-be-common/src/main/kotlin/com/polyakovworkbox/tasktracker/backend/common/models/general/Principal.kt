@@ -1,7 +1,10 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.general
 
+import com.polyakovworkbox.tasktracker.backend.common.permissions.UserGroups
+
 data class Principal(
-    var login: String = "",
+    var id: String = "",
+    var groups: List<UserGroups> = listOf(UserGroups.TEST)
 ){
 
     companion object {

@@ -1,5 +1,7 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.task
 
+import com.polyakovworkbox.tasktracker.backend.common.permissions.Permission
+
 data class Task(
     var id: TaskId = TaskId.NONE,
     var ownerId: OwnerId = OwnerId.NONE,
@@ -10,5 +12,6 @@ data class Task(
     var measurability: Measurability = Measurability(),
     var dueTime: DueTime = DueTime.NONE,
     var parent: TaskIdReference = TaskIdReference.NONE,
-    var children: List<TaskIdReference> = emptyList()
+    var children: List<TaskIdReference> = emptyList(),
+    var permissions: MutableList<Permission> = mutableListOf()
 )

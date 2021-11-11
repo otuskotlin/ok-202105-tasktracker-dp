@@ -2,10 +2,13 @@ package com.polyakovworkbox.tasktracker.backend.logics.chains
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
+import com.polyakovworkbox.tasktracker.backend.logics.workers.accessValidation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.chainInit
+import com.polyakovworkbox.tasktracker.backend.logics.workers.chainPermissions
 import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
-import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoCreate
+import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoDelete
+import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoRead
 import com.polyakovworkbox.tasktracker.backend.logics.workers.selectDB
 import com.polyakovworkbox.tasktracker.backend.logics.workers.taskDeleteStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
@@ -26,7 +29,10 @@ object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTaskId.id } }
     }
 
-    repoCreate("Deleting task from DB")
+    chainPermissions("Computing user permissions")
+    repoRead("Reading task from DB")
+    accessValidation("Validating permissions")
+    repoDelete("Deleting task from DB")
 
     prepareResponse("Preparing response")
 

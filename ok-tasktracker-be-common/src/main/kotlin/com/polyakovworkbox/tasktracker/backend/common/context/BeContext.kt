@@ -10,6 +10,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.ResponseId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter
+import com.polyakovworkbox.tasktracker.backend.common.permissions.UserPermissions
 import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
 import java.time.Instant
 
@@ -21,9 +22,12 @@ data class BeContext(
     var debug: Debug = Debug.DEFAULT,
 
     var principal: Principal = Principal.NONE,
+    var chainPermissions: MutableList<UserPermissions> = mutableListOf(),
 
     var config: ContextConfig = ContextConfig(),
     var taskRepo: ITaskRepo = ITaskRepo.NONE,
+
+    var dbTask: Task = Task(),
 
     var requestTask: Task = Task(),
     var requestTaskId: TaskId = TaskId.NONE,
