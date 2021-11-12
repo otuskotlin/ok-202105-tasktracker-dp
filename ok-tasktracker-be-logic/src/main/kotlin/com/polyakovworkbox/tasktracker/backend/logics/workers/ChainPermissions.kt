@@ -8,7 +8,7 @@ import com.polyakovworkbox.tasktracker.common.cor.ICorChainDsl
 import com.polyakovworkbox.tasktracker.common.cor.worker
 
 
-fun ICorChainDsl<BeContext>.chainPermissions(title: String) = worker<BeContext> {
+fun ICorChainDsl<BeContext>.backendPermissions(title: String) = worker<BeContext> {
     this.title = title
     description = "Calculating effective permissions of user"
 
@@ -29,15 +29,8 @@ fun ICorChainDsl<BeContext>.chainPermissions(title: String) = worker<BeContext> 
                 UserGroups.TEST -> setOf()
             }
         }.flatten().toSet()
-        val permDel: Set<UserPermissions> = principal.groups.map {
-            when(it) {
-                UserGroups.USER -> setOf<UserPermissions>()
-                UserGroups.TEST -> setOf()
-            }
-        }.flatten().toSet()
+
         chainPermissions.addAll(permAdd)
-        chainPermissions.removeAll(permDel)
-        println("PRINCIPAL: $principal")
-        println("PERMISSIONS: $chainPermissions")
+
     }
 }

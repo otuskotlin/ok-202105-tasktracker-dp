@@ -5,10 +5,12 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.Percent
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
 
 data class SearchFilter(
+    var ownerId: OwnerId = OwnerId.NONE,
     var nameFilter: Name = Name.NONE,
     var descriptionFilter: Description = Description.NONE,
     var attainabilityDescriptionFilter: Description = Description.NONE,

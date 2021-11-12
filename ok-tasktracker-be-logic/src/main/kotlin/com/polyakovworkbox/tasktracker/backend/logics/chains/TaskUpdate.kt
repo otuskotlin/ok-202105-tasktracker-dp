@@ -5,7 +5,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.logics.workers.accessValidation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.chainInit
-import com.polyakovworkbox.tasktracker.backend.logics.workers.chainPermissions
+import com.polyakovworkbox.tasktracker.backend.logics.workers.backendPermissions
 import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareTaskForSaving
@@ -39,7 +39,7 @@ object TaskUpdate: ICorExec<BeContext> by chain<BeContext> ({
         }
     }
 
-    chainPermissions("Computing user permissions")
+    backendPermissions("Computing user permissions")
     worker("Initing requestId") { requestTaskId = requestTask.id }
     repoRead("Reading task from DB")
 

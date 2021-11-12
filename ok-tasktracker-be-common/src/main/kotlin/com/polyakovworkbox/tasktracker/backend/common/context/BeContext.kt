@@ -15,29 +15,34 @@ import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
 import java.time.Instant
 
 data class BeContext(
+    //request meta propeerties
     var startTime: Instant = Instant.MIN,
     var operation: Operation = Operation.NONE,
-
     var requestId: RequestId = RequestId.NONE,
     var debug: Debug = Debug.DEFAULT,
 
+    //security properties
     var principal: Principal = Principal.NONE,
     var chainPermissions: MutableList<UserPermissions> = mutableListOf(),
+    var permitted: Boolean = false,
 
+    //repository properties
     var config: ContextConfig = ContextConfig(),
     var taskRepo: ITaskRepo = ITaskRepo.NONE,
-
     var dbTask: Task = Task(),
 
+    //request business properties
     var requestTask: Task = Task(),
     var requestTaskId: TaskId = TaskId.NONE,
-    var status: ResponseStatus = ResponseStatus.SUCCESS,
     var searchFilter: SearchFilter = SearchFilter(),
-    var responseTask: Task = Task(),
-    var responseTasks: MutableList<Task> = mutableListOf(),
 
+    //Current status
     var corStatus: CorStatus = CorStatus.NONE,
 
+    //response business properties
+    var status: ResponseStatus = ResponseStatus.SUCCESS,
+    var responseTask: Task = Task(),
+    var responseTasks: MutableList<Task> = mutableListOf(),
     var responseId: ResponseId = ResponseId.NONE,
     var errors: MutableList<ApiError> = mutableListOf(),
 

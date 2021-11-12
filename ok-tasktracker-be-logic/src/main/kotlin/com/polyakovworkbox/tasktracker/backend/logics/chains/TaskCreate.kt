@@ -7,9 +7,9 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.logics.workers.accessValidation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.chainInit
-import com.polyakovworkbox.tasktracker.backend.logics.workers.chainPermissions
+import com.polyakovworkbox.tasktracker.backend.logics.workers.backendPermissions
 import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
-import com.polyakovworkbox.tasktracker.backend.logics.workers.frontPermissions
+import com.polyakovworkbox.tasktracker.backend.logics.workers.frontendPermissions
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareTaskForSaving
 import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoCreate
@@ -18,7 +18,6 @@ import com.polyakovworkbox.tasktracker.backend.logics.workers.taskCreateStub
 import com.polyakovworkbox.tasktracker.common.cor.ICorExec
 import com.polyakovworkbox.tasktracker.common.cor.chain
 import com.polyakovworkbox.tasktracker.common.cor.validation
-import com.polyakovworkbox.tasktracker.common.cor.worker
 import com.polyakovworkbox.tasktracker.common.handlers.worker
 import com.polyakovworkbox.tasktracker.validators.AtLeastOneTaskValueProvidedValidator
 import com.polyakovworkbox.tasktracker.validators.NumberInRangeValidator
@@ -42,7 +41,7 @@ object TaskCreate: ICorExec<BeContext> by chain<BeContext> ({
         }
     }
 
-    chainPermissions("Computing user permissions")
+    backendPermissions("Computing user permissions")
     worker {
         title = "initing dbTask"
         on { corStatus == CorStatus.RUNNING }
@@ -55,7 +54,7 @@ object TaskCreate: ICorExec<BeContext> by chain<BeContext> ({
 
     repoCreate("Writing task into DB")
 
-    frontPermissions("Computing permissions to send")
+    frontendPermissions("Computing permissions to send")
 
     prepareResponse("Preparing response")
 

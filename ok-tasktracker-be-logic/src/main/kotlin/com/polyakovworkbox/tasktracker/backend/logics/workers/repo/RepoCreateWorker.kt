@@ -12,7 +12,7 @@ internal fun CorChainDsl<BeContext>.repoCreate(title: String) = worker {
     on { corStatus == CorStatus.RUNNING }
 
     handle {
-        val result = taskRepo.create(TaskModelRequest(task = requestTask))
+        val result = taskRepo.create(TaskModelRequest(task = dbTask))
         val resultValue = result.result
         if (result.isSuccess && resultValue != null) {
             responseTask = resultValue

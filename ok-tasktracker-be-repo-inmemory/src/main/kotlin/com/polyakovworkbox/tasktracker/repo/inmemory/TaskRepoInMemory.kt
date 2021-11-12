@@ -160,6 +160,8 @@ class TaskRepoInMemory(
 
         val results: List<Task> = cache.asFlow()
             .filter {
+                req.ownerId == null || it.value.ownerId == req.ownerId
+            }.filter {
                 req.nameFilter == null || it.value.name == req.nameFilter
             }.filter {
                 req.descriptionFilter == null || it.value.description == req.descriptionFilter

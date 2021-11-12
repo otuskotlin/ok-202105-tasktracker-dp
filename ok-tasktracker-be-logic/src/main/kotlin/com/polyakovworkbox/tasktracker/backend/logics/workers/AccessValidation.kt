@@ -6,36 +6,23 @@ import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
 import com.polyakovworkbox.tasktracker.common.cor.ICorChainDsl
 import com.polyakovworkbox.tasktracker.common.handlers.chain
 import com.polyakovworkbox.tasktracker.common.handlers.worker
+import jdk.jshell.Snippet
 
 fun ICorChainDsl<BeContext>.accessValidation(title: String) = chain {
     this.title = title
-    description = "Вычисление прав доступа по группе принципала и таблице прав доступа"
+    description = "Calculating access rights"
     on { corStatus == CorStatus.RUNNING }
-    worker("Вычисление отношения объявления к принципалу") {
-        dbTask.principalRelations = dbTask.resolveRelationsTo(principal)
-    }
-    worker("Вычисление доступа к объявлению") {
-        permitted = dbTask.principalRelations.flatMap { relation ->
-            chainPermissions.map { permission ->
-                AccessTableConditions(
-                    operation = operation,
-                    permission = permission,
-                    relation = relation,
-                )
-            }
-        }
-            .any {
-                accessTable[it] ?: false
-            }
+    worker("Show tasks only to user that owns this task") {
+        permitted = dbTask.ownerId.id == principal.id
     }
     worker {
-        this.title = "Валидация прав доступа"
-        description = "Проверка наличия прав для выполнения операции"
+        this.title = "Validating access rights"
         on { !permitted }
         handle {
             errors.add(
                 ApiError(message = "User is not allowed to this operation")
             )
+            corStatus = CorStatus.FAILING
         }
     }
 }

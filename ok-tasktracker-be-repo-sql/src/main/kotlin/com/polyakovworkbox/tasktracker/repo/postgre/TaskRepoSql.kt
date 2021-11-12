@@ -128,6 +128,8 @@ class TaskRepoSql(
         return safeTransaction({
             // Select only if options are provided
             val results = (TasksTable).select { (
+                    (if(req.ownerId?.isBlank() != false) Op.TRUE else TasksTable.ownerId eq (req.ownerId ?: ""))
+                ).and(
                     (if(req.nameFilter?.isBlank() != false) Op.TRUE else TasksTable.name eq (req.nameFilter ?: ""))
                 ).and(
                     (if(req.descriptionFilter?.isBlank() != false) Op.TRUE else TasksTable.description eq (req.descriptionFilter ?: ""))

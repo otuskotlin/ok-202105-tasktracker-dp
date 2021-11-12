@@ -5,6 +5,7 @@ import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.DueTime
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
@@ -16,6 +17,7 @@ import java.time.ZoneId
 
 object TasksTable : Table("Tasks") {
     val id = uuid("id").uniqueIndex()
+    val ownerId = varchar("ownerId", 128)
     val name = varchar("name", 128)
     val description = varchar("description", 1024)
     var attainabilityDescription = varchar("attainabilityDescription", 1024)
@@ -30,6 +32,7 @@ object TasksTable : Table("Tasks") {
 
     fun from(res: InsertStatement<Number>) = Task(
         id = TaskId(res[id]),
+        ownerId = OwnerId(res[ownerId]),
         name = Name(res[name]),
         description = Description(res[description]),
         attainabilityDescription = Description(res[attainabilityDescription]),
@@ -45,6 +48,7 @@ object TasksTable : Table("Tasks") {
 
     fun from(res: ResultRow) = Task(
         id = TaskId(res[id]),
+        ownerId = OwnerId(res[ownerId]),
         name = Name(res[name]),
         description = Description(res[description]),
         attainabilityDescription = Description(res[attainabilityDescription]),

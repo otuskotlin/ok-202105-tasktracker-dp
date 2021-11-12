@@ -4,7 +4,7 @@ import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.accessValidation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.chainInit
-import com.polyakovworkbox.tasktracker.backend.logics.workers.chainPermissions
+import com.polyakovworkbox.tasktracker.backend.logics.workers.backendPermissions
 import com.polyakovworkbox.tasktracker.backend.logics.workers.checkOperation
 import com.polyakovworkbox.tasktracker.backend.logics.workers.prepareResponse
 import com.polyakovworkbox.tasktracker.backend.logics.workers.repo.repoDelete
@@ -29,7 +29,7 @@ object TaskDelete: ICorExec<BeContext> by chain<BeContext> ({
         validate<String> { validator(StringNotEmptyValidator("id")); on { this.requestTaskId.id } }
     }
 
-    chainPermissions("Computing user permissions")
+    backendPermissions("Computing user permissions")
     repoRead("Reading task from DB")
     accessValidation("Validating permissions")
     repoDelete("Deleting task from DB")
