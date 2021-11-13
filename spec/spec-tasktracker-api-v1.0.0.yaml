@@ -355,3 +355,39 @@ components:
           type: integer
           minimum: 0
           maximum: 100
+
+    LogModel:
+      description: contains everything that can be logged inside one object
+      allOf:
+        - type: object
+          properties:
+            requestTaskId:
+              type: string
+            requestTask:
+              $ref: '#/components/schemas/UpdatableTask'
+            searchFilter:
+              $ref: '#/components/schemas/SearchFilter'
+            responseTasks:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatableTask'
+
+    CommonLogModel:
+      description: contains metadata and log model with data
+      allOf:
+        - type: object
+          properties:
+            messageId:
+              type: string
+            messageTime:
+              type: string
+            logId:
+              type: string
+            source:
+              type: string
+            task:
+              $ref: '#/components/schemas/LogModel'
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/ApiError'

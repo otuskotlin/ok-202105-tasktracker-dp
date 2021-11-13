@@ -17,5 +17,6 @@ dependencies {
     implementation(project(":ok-tasktracker-be-mappers-openapi"))
     implementation(project(":ok-tasktracker-be-stubs"))
     implementation(project(":ok-tasktracker-be-logic"))
+    implementation(project(":ok-tasktracker-be-logging"))
 
 }
