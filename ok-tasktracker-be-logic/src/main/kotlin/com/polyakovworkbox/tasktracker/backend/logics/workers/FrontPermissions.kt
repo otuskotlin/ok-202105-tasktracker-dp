@@ -2,7 +2,7 @@ package com.polyakovworkbox.tasktracker.backend.logics.workers
 
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
-import com.polyakovworkbox.tasktracker.backend.common.permissions.Permission
+import com.polyakovworkbox.tasktracker.backend.common.permissions.FrontendPermissions
 import com.polyakovworkbox.tasktracker.backend.common.permissions.UserGroups
 import com.polyakovworkbox.tasktracker.common.cor.ICorChainDsl
 import com.polyakovworkbox.tasktracker.common.handlers.chain
@@ -19,14 +19,14 @@ fun ICorChainDsl<BeContext>.frontendPermissions(title: String) = chain {
         description = this.title
         on { responseTask.ownerId.id == principal.id }
         handle {
-            val permAdd: Set<Permission> = principal.groups.map {
+            val permAdd: Set<FrontendPermissions> = principal.groups.map {
                 when (it) {
                     UserGroups.USER -> setOf(
-                        Permission.CREATE,
-                        Permission.READ,
-                        Permission.UPDATE,
-                        Permission.DELETE,
-                        Permission.SEARCH
+                        FrontendPermissions.CREATE,
+                        FrontendPermissions.READ,
+                        FrontendPermissions.UPDATE,
+                        FrontendPermissions.DELETE,
+                        FrontendPermissions.SEARCH
                     )
                     UserGroups.TEST -> setOf()
                 }

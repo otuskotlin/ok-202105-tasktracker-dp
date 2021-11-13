@@ -1,6 +1,6 @@
 package com.polyakovworkbox.tasktracker.backend.common.permissions
 
-enum class Permission {
+enum class FrontendPermissions {
     CREATE,
     READ,
     UPDATE,

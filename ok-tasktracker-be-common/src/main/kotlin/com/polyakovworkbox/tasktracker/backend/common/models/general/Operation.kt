@@ -1,12 +1,12 @@
 package com.polyakovworkbox.tasktracker.backend.common.models.general
 
-import com.polyakovworkbox.tasktracker.backend.common.permissions.UserPermissions
+import com.polyakovworkbox.tasktracker.backend.common.permissions.BackendPermissions
 
-enum class Operation (val permission: UserPermissions? = null) {
+enum class Operation (val permission: BackendPermissions? = null) {
     NONE,
-    CREATE(UserPermissions.CREATE_OWN),
-    READ(UserPermissions.READ_OWN),
-    UPDATE(UserPermissions.UPDATE_OWN),
-    DELETE(UserPermissions.DELETE_OWN),
-    SEARCH(UserPermissions.SEARCH_OWN)
+    CREATE(BackendPermissions.CREATE_OWN),
+    READ(BackendPermissions.READ_OWN),
+    UPDATE(BackendPermissions.UPDATE_OWN),
+    DELETE(BackendPermissions.DELETE_OWN),
+    SEARCH(BackendPermissions.SEARCH_OWN)
 }

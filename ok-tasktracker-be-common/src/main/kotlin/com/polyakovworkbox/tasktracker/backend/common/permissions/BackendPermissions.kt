@@ -1,6 +1,6 @@
 package com.polyakovworkbox.tasktracker.backend.common.permissions
 
-enum class UserPermissions {
+enum class BackendPermissions {
     CREATE_OWN,
     READ_OWN,
     UPDATE_OWN,
