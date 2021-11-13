@@ -178,6 +178,7 @@ class TaskRepoSql(
         if(req.id != TaskId.NONE) {
             it[id] = req.id.asUUID()
         }
+        it[ownerId] = req.ownerId.id
         it[name] = req.name.name
         it[description] = req.description.description
         it[attainabilityDescription] = req.attainabilityDescription.description

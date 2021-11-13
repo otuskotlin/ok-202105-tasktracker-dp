@@ -27,11 +27,11 @@ fun ICorChainDsl<BeContext>.frontendPermissions(title: String) = chain {
                         Permission.DELETE,
                     )
                     UserGroups.TEST -> setOf()
+                    UserGroups.NONE -> setOf()
                 }
             }.flatten().toSet()
 
             responseTask.permissions.addAll(permAdd)
         }
     }
-
 }

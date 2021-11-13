@@ -17,6 +17,7 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdatableTask
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskRequest
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
+import com.polyakovworkbox.tasktracker.springapp.TokenRetriever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -29,7 +30,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import java.util.*
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,14 +41,13 @@ class TaskControllerTest {
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
+    @Autowired
+    private lateinit var tokenRetriever: TokenRetriever
+
     private val om = ObjectMapper().registerKotlinModule()
 
     @Test
     fun `create stub success`() {
-        val headers = HttpHeaders()
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
-        headers.setContentType(MediaType.APPLICATION_JSON)
-
         val request = CreateTaskRequest(
             requestId = "1234567890",
             debug = Debug(Debug.Mode.STUB, Debug.Stub.SUCCESS),
@@ -59,7 +58,7 @@ class TaskControllerTest {
             )
         )
 
-        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), headers)
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
         val response: CreateTaskResponse? = restTemplate
             .exchange(
@@ -68,14 +67,17 @@ class TaskControllerTest {
             entity,
             CreateTaskResponse::class.java
         ).body
-/*            .postForObject(
-            "http://localhost:${port}/task/create",
-            request,
-            CreateTaskResponse::class.java
-        )*/
 
-        assertEquals(ResponseResult.SUCCESS, response!!.result)
-        assertEquals("""read "The Lord of the Rings"""", response.task?.name)
+        assertEquals(ResponseResult.SUCCESS, response?.result)
+        assertEquals("""read "The Lord of the Rings"""", response?.task?.name)
+    }
+
+    private fun httpHeaders(): HttpHeaders {
+        val headers = HttpHeaders()
+        headers.setBearerAuth(tokenRetriever.getToken())
+        headers.accept = listOf(MediaType.APPLICATION_JSON)
+        headers.contentType = MediaType.APPLICATION_JSON
+        return headers
     }
 
     @Test
@@ -90,17 +92,19 @@ class TaskControllerTest {
             )
         )
 
-        val response: CreateTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/create",
-            request,
-            CreateTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.ERROR, response.result)
-        assertEquals(null, response.task)
-        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+        val response: CreateTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/create",
+                HttpMethod.POST,
+                entity,
+                CreateTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.ERROR, response?.result)
+        assertEquals(null, response?.task)
+        assertTrue(response?.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
 
@@ -112,16 +116,18 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: ReadTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/read",
-            request,
-            ReadTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.SUCCESS, response.result)
-        assertEquals("""read "The Lord of the Rings"""", response.task?.name)
+        val response: ReadTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/read",
+                HttpMethod.POST,
+                entity,
+                ReadTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.SUCCESS, response?.result)
+        assertEquals("""read "The Lord of the Rings"""", response?.task?.name)
     }
 
     @Test
@@ -132,17 +138,19 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: ReadTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/read",
-            request,
-            ReadTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.ERROR, response.result)
-        assertEquals(null, response.task)
-        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+        val response: ReadTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/read",
+                HttpMethod.POST,
+                entity,
+                ReadTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.ERROR, response?.result)
+        assertEquals(null, response?.task)
+        assertTrue(response?.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
 
@@ -160,16 +168,18 @@ class TaskControllerTest {
             )
         )
 
-        val response: UpdateTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/update",
-            request,
-            UpdateTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.SUCCESS, response.result)
-        assertEquals("""2021-08-23T18:25:43.511Z""", response.task?.dueTime)
+        val response: UpdateTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/update",
+                HttpMethod.POST,
+                entity,
+                UpdateTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.SUCCESS, response?.result)
+        assertEquals("""2021-08-23T18:25:43.511Z""", response?.task?.dueTime)
     }
 
     @Test
@@ -186,17 +196,19 @@ class TaskControllerTest {
             )
         )
 
-        val response: UpdateTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/update",
-            request,
-            UpdateTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.ERROR, response.result)
-        assertEquals(null, response.task)
-        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+        val response: UpdateTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/update",
+                HttpMethod.POST,
+                entity,
+                UpdateTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.ERROR, response?.result)
+        assertEquals(null, response?.task)
+        assertTrue(response?.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
     @Test
@@ -207,16 +219,18 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: DeleteTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/delete",
-            request,
-            DeleteTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.SUCCESS, response.result)
-        assertEquals("1", response.task?.id)
+        val response: DeleteTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/delete",
+                HttpMethod.POST,
+                entity,
+                DeleteTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.SUCCESS, response?.result)
+        assertEquals("1", response?.task?.id)
     }
 
     @Test
@@ -227,17 +241,19 @@ class TaskControllerTest {
             id = "1"
         )
 
-        val response: DeleteTaskResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/delete",
-            request,
-            DeleteTaskResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.ERROR, response.result)
-        assertEquals(null, response.task)
-        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+        val response: DeleteTaskResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/delete",
+                HttpMethod.POST,
+                entity,
+                DeleteTaskResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.ERROR, response?.result)
+        assertEquals(null, response?.task)
+        assertTrue(response?.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 
     @Test
@@ -250,16 +266,18 @@ class TaskControllerTest {
             )
         )
 
-        val response: SearchTasksResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/search",
-            request,
-            SearchTasksResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.SUCCESS, response.result)
-        assertThat(response.availableTasks?.all { it.name.contains("The Lord of the Rings") })
+        val response: SearchTasksResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/search",
+                HttpMethod.POST,
+                entity,
+                SearchTasksResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.SUCCESS, response?.result)
+        assertThat(response?.availableTasks?.all { it.name.contains("The Lord of the Rings") })
 
     }
 
@@ -273,16 +291,18 @@ class TaskControllerTest {
             )
         )
 
-        val response: SearchTasksResponse = restTemplate
-            .withBasicAuth("taskUser", "taskUserPass")
-            .postForObject(
-            "http://localhost:${port}/task/search",
-            request,
-            SearchTasksResponse::class.java
-        )
+        val entity: HttpEntity<String> = HttpEntity<String>(om.writeValueAsString(request), httpHeaders())
 
-        assertEquals(ResponseResult.ERROR, response.result)
-        assertThat(response.availableTasks.isNullOrEmpty())
-        assertTrue(response.errors?.all { it.message == "DB error occurred" } ?: false)
+        val response: SearchTasksResponse? = restTemplate
+            .exchange(
+                "http://localhost:${port}/task/search",
+                HttpMethod.POST,
+                entity,
+                SearchTasksResponse::class.java
+            ).body
+
+        assertEquals(ResponseResult.ERROR, response?.result)
+        assertThat(response?.availableTasks.isNullOrEmpty())
+        assertTrue(response?.errors?.all { it.message == "DB error occurred" } ?: false)
     }
 }

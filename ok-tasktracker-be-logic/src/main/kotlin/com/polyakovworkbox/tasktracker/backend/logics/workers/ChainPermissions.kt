@@ -27,6 +27,7 @@ fun ICorChainDsl<BeContext>.backendPermissions(title: String) = worker<BeContext
                     UserPermissions.DELETE_OWN,
                 )
                 UserGroups.TEST -> setOf()
+                UserGroups.NONE -> setOf()
             }
         }.flatten().toSet()
 

@@ -14,13 +14,11 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
+import com.polyakovworkbox.tasktracker.springapp.mappers.toUserGroups
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
 import org.keycloak.KeycloakPrincipal
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,8 +35,7 @@ class TaskController(
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        context.principal = Principal(user.username)
+        fillSecurityDetails(context)
 
         context.operation = Operation.CREATE
 
@@ -53,8 +50,7 @@ class TaskController(
     fun readTask(@RequestBody request: ReadTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user = SecurityContextHolder.getContext().authentication.principal as KeycloakPrincipal<*>
-        context.principal = Principal(user.name)
+        fillSecurityDetails(context)
 
         context.operation = Operation.READ
 
@@ -70,8 +66,7 @@ class TaskController(
     fun updateTask(@RequestBody request: UpdateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        context.principal = Principal(user.username)
+        fillSecurityDetails(context)
 
         context.operation = Operation.UPDATE
 
@@ -86,8 +81,7 @@ class TaskController(
     fun deleteTask(@RequestBody request: DeleteTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        context.principal = Principal(user.username)
+        fillSecurityDetails(context)
 
         context.operation = Operation.DELETE
 
@@ -102,8 +96,7 @@ class TaskController(
     fun searchTask(@RequestBody request: SearchTasksRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        context.principal = Principal(user.username)
+        fillSecurityDetails(context)
 
         context.operation = Operation.SEARCH
 
@@ -113,4 +106,16 @@ class TaskController(
             runBlocking { taskService.toError(context, e, ::SearchTasksResponse) }
         }
     }
+
+    private fun fillSecurityDetails(context: BeContext) {
+        val principal: KeycloakPrincipal<*> =
+            SecurityContextHolder.getContext().authentication.principal as KeycloakPrincipal<*>
+
+        context.principal = Principal(
+            principal.name,
+            principal.keycloakSecurityContext.token.realmAccess.roles.toUserGroups()
+        )
+    }
 }
+
+
