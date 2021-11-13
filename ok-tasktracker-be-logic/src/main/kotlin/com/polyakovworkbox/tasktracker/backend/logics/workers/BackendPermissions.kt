@@ -21,13 +21,12 @@ fun ICorChainDsl<BeContext>.backendPermissions(title: String) = worker<BeContext
             when(it) {
                 UserGroups.USER -> setOf(
                     UserPermissions.READ_OWN,
-                    UserPermissions.READ_PUBLIC,
                     UserPermissions.CREATE_OWN,
                     UserPermissions.UPDATE_OWN,
                     UserPermissions.DELETE_OWN,
+                    UserPermissions.SEARCH_OWN
                 )
                 UserGroups.TEST -> setOf()
-                UserGroups.NONE -> setOf()
             }
         }.flatten().toSet()
 

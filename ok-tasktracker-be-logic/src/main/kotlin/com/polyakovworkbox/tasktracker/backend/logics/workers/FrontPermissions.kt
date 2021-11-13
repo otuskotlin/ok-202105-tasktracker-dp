@@ -22,12 +22,13 @@ fun ICorChainDsl<BeContext>.frontendPermissions(title: String) = chain {
             val permAdd: Set<Permission> = principal.groups.map {
                 when (it) {
                     UserGroups.USER -> setOf(
+                        Permission.CREATE,
                         Permission.READ,
                         Permission.UPDATE,
                         Permission.DELETE,
+                        Permission.SEARCH
                     )
                     UserGroups.TEST -> setOf()
-                    UserGroups.NONE -> setOf()
                 }
             }.flatten().toSet()
 

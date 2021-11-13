@@ -1,8 +1,9 @@
 package com.polyakovworkbox.tasktracker.backend.common.permissions
 
 enum class Permission {
-    NONE,
+    CREATE,
     READ,
     UPDATE,
-    DELETE
+    DELETE,
+    SEARCH
 }
