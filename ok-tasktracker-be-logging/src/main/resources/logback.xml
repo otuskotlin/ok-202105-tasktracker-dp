@@ -4,10 +4,10 @@
     <property name="LOGS_KAFKA_HOSTS" value="${BOOTSTRAP_SERVERS:-localhost:9094}"/>
 
     <!-- For ELK-stack: Kafka log`s topic -->
-    <property name="LOGS_KAFKA_TOPIC value=${LOGS_KAFKA_TOPIC:-otuskotlin-workout-logs}"/>
+    <property name="LOGS_KAFKA_TOPIC value=${LOGS_KAFKA_TOPIC:-otuskotlin-tasktracker-logs}"/>
 
     <!-- For log files: App name -->
-    <property name="SERVICE_NAME" value="${SERVICE_NAME:-ok_workout}"/>
+    <property name="SERVICE_NAME" value="${SERVICE_NAME:-ok_tasktracker}"/>
 
     <!-- For level for packages "ru.otus..." -->
     <property name="LOG_OTUS_LEVEL" value="${LOG_OTUS_LEVEL:-info}"/>

@@ -335,7 +335,7 @@ components:
           format: date-time
         dueTimeFilterEquality:
           $ref: '#/components/schemas/EqualityMode'
-        prentIdFilter:
+        parentIdFilter:
           type: string
         childIdFilter:
           type: string
