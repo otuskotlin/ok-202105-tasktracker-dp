@@ -38,6 +38,7 @@ class TaskController(
         val context = BeContext(startTime = Instant.now())
 
         val logger = mpLogger(this::class.java)
+        logger.log("hello logs!", Level.ERROR)
 
         fillSecurityDetails(context)
 

@@ -10,7 +10,7 @@
     <property name="SERVICE_NAME" value="${SERVICE_NAME:-ok_tasktracker}"/>
 
     <!-- For level for packages "ru.otus..." -->
-    <property name="LOG_OTUS_LEVEL" value="${LOG_OTUS_LEVEL:-info}"/>
+    <property name="LOG_POLYAKOVWORKBOX_LEVEL" value="${LOG_POLYAKOVWORKBOX_LEVEL:-info}"/>
 
     <!-- For level for other packages -->
     <property name="LOG_COMMON_LEVEL" value="${LOG_COMMON_LEVEL:-error}"/>
@@ -63,7 +63,7 @@
         </if>
     </appender>
 
-    <logger name="ru.otus" level="${LOG_OTUS_LEVEL}" additivity="false">
+    <logger name="com.polyakovworkbox" level="${LOG_POLYAKOVWORKBOX_LEVEL}" additivity="false">
         <appender-ref ref="asyncMyLogKafka"/>
         <appender-ref ref="STDOUT"/>
     </logger>
