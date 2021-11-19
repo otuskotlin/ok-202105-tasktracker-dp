@@ -14,10 +14,12 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
+import com.polyakovworkbox.tasktracker.backend.logging.mpLogger
 import com.polyakovworkbox.tasktracker.springapp.mappers.toUserGroups
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
 import org.keycloak.KeycloakPrincipal
+import org.slf4j.event.Level
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -35,12 +37,17 @@ class TaskController(
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
 
+        val logger = mpLogger(this::class.java)
+
         fillSecurityDetails(context)
 
         context.operation = Operation.CREATE
 
         return try {
-            runBlocking { taskService.create(context, request) }
+            runBlocking {
+                logger.doWithLogging("myLogId", Level.INFO, suspend { taskService.create(context, request) })
+            }
+
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::CreateTaskResponse) }
         }
