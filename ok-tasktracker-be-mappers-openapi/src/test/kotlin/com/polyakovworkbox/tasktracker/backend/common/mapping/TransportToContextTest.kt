@@ -79,6 +79,7 @@ internal class TransportToContextTest {
                 requestId = "request-id",
                 task = CreatableTask(
                     name = "some-name",
+                    ownerId = "00560000-0000-0000-0000-000000000001",
                     description = "some-description"
                 )
         )
@@ -109,6 +110,7 @@ internal class TransportToContextTest {
             requestId = "request-id",
             task = UpdatableTask(
                 id = "some-id",
+                ownerId = "00560000-0000-0000-0000-000000000001",
                 name = "some-name",
                 description = "some-new-description"
             )
@@ -152,6 +154,7 @@ internal class TransportToContextTest {
     fun `creatable task mapping test`() {
         val creatableTask = CreatableTask(
             name = "some-name",
+            ownerId = "00560000-0000-0000-0000-000000000001",
             description = "some-description",
             attainabilityDescription = "some-attainability-description",
             relevanceDescription = "some-relevance-description",
@@ -178,6 +181,7 @@ internal class TransportToContextTest {
     fun `updatable task mapping test`() {
         val creatableTask = UpdatableTask(
             id = "some-id",
+            ownerId = "00560000-0000-0000-0000-000000000001",
             name = "some-name",
             description = "some-description",
             attainabilityDescription = "some-attainability-description",

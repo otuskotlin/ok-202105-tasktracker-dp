@@ -13,9 +13,12 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.UpdateTaskResponse
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
-import com.polyakovworkbox.tasktracker.springapp.async.KafkaProducer
+import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
+import com.polyakovworkbox.tasktracker.springapp.mappers.toUserGroups
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
+import org.keycloak.KeycloakPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,9 +30,13 @@ import java.time.Instant
 class TaskController(
     val taskService: TaskService
 ) {
+
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        fillSecurityDetails(context)
+
         context.operation = Operation.CREATE
 
         return try {
@@ -42,6 +49,9 @@ class TaskController(
     @PostMapping("read")
     fun readTask(@RequestBody request: ReadTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        fillSecurityDetails(context)
+
         context.operation = Operation.READ
 
         return try {
@@ -55,6 +65,9 @@ class TaskController(
     @PostMapping("update")
     fun updateTask(@RequestBody request: UpdateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        fillSecurityDetails(context)
+
         context.operation = Operation.UPDATE
 
         return try {
@@ -67,6 +80,9 @@ class TaskController(
     @PostMapping("delete")
     fun deleteTask(@RequestBody request: DeleteTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        fillSecurityDetails(context)
+
         context.operation = Operation.DELETE
 
         return try {
@@ -79,6 +95,9 @@ class TaskController(
     @PostMapping("search")
     fun searchTask(@RequestBody request: SearchTasksRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
+
+        fillSecurityDetails(context)
+
         context.operation = Operation.SEARCH
 
         return try {
@@ -87,4 +106,19 @@ class TaskController(
             runBlocking { taskService.toError(context, e, ::SearchTasksResponse) }
         }
     }
+
+    private fun fillSecurityDetails(context: BeContext) {
+        val principal: KeycloakPrincipal<*> =
+            SecurityContextHolder.getContext().authentication.principal as KeycloakPrincipal<*>
+
+        context.principal = Principal(
+            principal.name,
+            principal.keycloakSecurityContext.token.otherClaims["fio"]?.toString() ?: "",
+            principal.keycloakSecurityContext.token.otherClaims["registrationEmail"]?.toString() ?: "",
+            principal.keycloakSecurityContext.token.otherClaims["registrationPhoneNumber"]?.toString() ?: "",
+            principal.keycloakSecurityContext.token.realmAccess.roles.toUserGroups()
+        )
+    }
 }
+
+

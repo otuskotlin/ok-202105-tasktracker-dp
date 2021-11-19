@@ -3,6 +3,7 @@ package com.polyakovworkbox.tasktracker.repo.test
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
@@ -36,16 +37,18 @@ abstract class TaskRepositoryUpdateTest {
             createInitTestModel("update")
         )
         private val updateId = initObjects.first().id
-        private val updateIdNotFound = TaskId(UUID.randomUUID())
+        private val updateIdNotFound = TaskId.getRandom()
 
         private val updateObj = Task(
             id = updateId,
+            ownerId = OwnerId("00560000-0000-0000-0000-000000000001"),
             name = Name("update object"),
             description = Description("update object description"),
         )
 
         private val updateObjNotFound = Task(
             id = updateIdNotFound,
+            ownerId = OwnerId("00560000-0000-0000-0000-000000000001"),
             name = Name("update object not found"),
             description = Description("update object not found description"),
         )

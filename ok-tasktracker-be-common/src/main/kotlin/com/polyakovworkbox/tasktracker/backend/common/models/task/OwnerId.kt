@@ -3,18 +3,19 @@ package com.polyakovworkbox.tasktracker.backend.common.models.task
 import java.util.*
 
 @JvmInline
-value class TaskId(
+value class OwnerId(
     val id: String
 ) {
     constructor(id: UUID) : this(id.toString())
 
     companion object {
-        val NONE = TaskId("")
+        val NONE = OwnerId("")
 
-        fun getRandom(): TaskId = TaskId(UUID.randomUUID())
+        fun getRandom(): OwnerId = OwnerId(UUID.randomUUID())
     }
 
     fun asString() = id
 
     fun asUUID(): UUID = if (id.isNotBlank()) UUID.fromString(id) else throw IllegalStateException()
+
 }

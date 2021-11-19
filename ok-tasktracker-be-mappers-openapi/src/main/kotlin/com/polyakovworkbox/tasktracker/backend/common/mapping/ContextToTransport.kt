@@ -92,6 +92,7 @@ fun com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError.mapTo
 fun TaskDomain.mapToTransport(): UpdatableTask =
     UpdatableTask(
         name = name.name,
+        ownerId = ownerId.id,
         id = id.mapToTransport(),
         description = description.description,
         attainabilityDescription = attainabilityDescription.description,

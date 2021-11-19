@@ -3,6 +3,7 @@ package com.polyakovworkbox.tasktracker.repo.test
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Description
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Name
+import com.polyakovworkbox.tasktracker.backend.common.models.task.OwnerId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.repositories.ITaskRepo
@@ -30,6 +31,7 @@ abstract class TaskRepositoryCreateTest {
 
         private val createObj = Task(
             id = TaskId("00000000-0000-0000-0000-000000000000"),
+            ownerId = OwnerId("00560000-0000-0000-0000-000000000001"),
             name = Name("create object"),
             description = Description("create object description")
         )
