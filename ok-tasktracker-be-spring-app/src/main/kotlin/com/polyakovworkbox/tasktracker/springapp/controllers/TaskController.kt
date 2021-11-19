@@ -113,6 +113,9 @@ class TaskController(
 
         context.principal = Principal(
             principal.name,
+            principal.keycloakSecurityContext.token.otherClaims["fio"]?.toString() ?: "",
+            principal.keycloakSecurityContext.token.otherClaims["registrationEmail"]?.toString() ?: "",
+            principal.keycloakSecurityContext.token.otherClaims["registrationPhoneNumber"]?.toString() ?: "",
             principal.keycloakSecurityContext.token.realmAccess.roles.toUserGroups()
         )
     }

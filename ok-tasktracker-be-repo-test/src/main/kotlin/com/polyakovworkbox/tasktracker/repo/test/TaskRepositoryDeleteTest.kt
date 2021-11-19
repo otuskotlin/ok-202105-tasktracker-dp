@@ -15,7 +15,15 @@ abstract class TaskRepositoryDeleteTest {
 
     @Test
     fun deleteSuccess() {
-        val result = runBlocking { repo.delete(TaskIdRequest(initObjects.firstOrNull()?.id?.asUUID() ?: UUID.randomUUID())) }
+        val first = initObjects.firstOrNull()
+
+        val result = runBlocking { repo.delete(
+            if(first == null)
+                TaskIdRequest.getRandom()
+            else
+                TaskIdRequest(first.id.asUUID())
+        )
+        }
 
         assertEquals(true, result.isSuccess)
         assertEquals(deleteSuccessStub, result.result)
@@ -24,7 +32,7 @@ abstract class TaskRepositoryDeleteTest {
 
     @Test
     fun deleteNotFound() {
-        val result = runBlocking { repo.read(TaskIdRequest(UUID.randomUUID())) }
+        val result = runBlocking { repo.read(TaskIdRequest.getRandom()) }
 
         assertEquals(false, result.isSuccess)
         assertEquals(null, result.result)
@@ -40,6 +48,6 @@ abstract class TaskRepositoryDeleteTest {
         )
         private val deleteSuccessStub = initObjects.first()
         val successId = deleteSuccessStub.id
-        val notFoundId = TaskId(UUID.randomUUID())
+        val notFoundId = TaskId.getRandom()
     }
 }

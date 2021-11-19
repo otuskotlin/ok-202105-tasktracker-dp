@@ -10,9 +10,12 @@ value class OwnerId(
 
     companion object {
         val NONE = OwnerId("")
+
+        fun getRandom(): OwnerId = OwnerId(UUID.randomUUID())
     }
 
     fun asString() = id
 
     fun asUUID(): UUID = if (id.isNotBlank()) UUID.fromString(id) else throw IllegalStateException()
+
 }

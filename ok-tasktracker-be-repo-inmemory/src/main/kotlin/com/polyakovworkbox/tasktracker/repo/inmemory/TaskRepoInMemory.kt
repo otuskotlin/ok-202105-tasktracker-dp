@@ -76,7 +76,7 @@ class TaskRepoInMemory(
     }
 
     override suspend fun create(req: TaskModelRequest): TaskRepoResponse =
-        save(req.task.copy(id = TaskId(UUID.randomUUID().toString())))
+        save(req.task.copy(id = TaskId.getRandom()))
 
     override suspend fun read(req: TaskIdRequest): TaskRepoResponse = cache.get(req.id)?.let {
         TaskRepoResponse(

@@ -10,6 +10,8 @@ value class TaskId(
 
     companion object {
         val NONE = TaskId("")
+
+        fun getRandom(): TaskId = TaskId(UUID.randomUUID())
     }
 
     fun asString() = id

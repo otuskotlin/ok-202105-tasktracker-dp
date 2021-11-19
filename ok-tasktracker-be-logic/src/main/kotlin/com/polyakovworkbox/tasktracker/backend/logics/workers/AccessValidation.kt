@@ -3,6 +3,7 @@ package com.polyakovworkbox.tasktracker.backend.logics.workers
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.general.CorStatus
+import com.polyakovworkbox.tasktracker.backend.common.permissions.utils.getRelatedPermissions
 import com.polyakovworkbox.tasktracker.common.cor.ICorChainDsl
 import com.polyakovworkbox.tasktracker.common.handlers.chain
 import com.polyakovworkbox.tasktracker.common.handlers.worker
@@ -16,7 +17,7 @@ fun ICorChainDsl<BeContext>.accessValidation(title: String) = chain {
     }
     worker {
         this.title = "Validating access rights"
-        on { !permitted || !chainPermissions.contains(operation.permission) }
+        on { !permitted || !chainPermissions.containsAll(operation.getRelatedPermissions()) }
         handle {
             errors.add(
                 ApiError(message = "User is not allowed to this operation")

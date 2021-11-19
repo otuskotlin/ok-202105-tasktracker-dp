@@ -37,7 +37,7 @@ abstract class TaskRepositoryUpdateTest {
             createInitTestModel("update")
         )
         private val updateId = initObjects.first().id
-        private val updateIdNotFound = TaskId(UUID.randomUUID())
+        private val updateIdNotFound = TaskId.getRandom()
 
         private val updateObj = Task(
             id = updateId,
