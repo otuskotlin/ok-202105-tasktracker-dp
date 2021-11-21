@@ -35,7 +35,7 @@ class LoggerTest {
 
         try {
             runBlocking {
-                val logger = mpLogger(this::class.java)
+                val logger = loggerFor(this::class.java)
                 logger.doWithLogging(logId, block = block)
             }
         } catch (ignore: RuntimeException) {

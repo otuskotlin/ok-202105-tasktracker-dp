@@ -17,40 +17,60 @@ import com.polyakovworkbox.tasktracker.backend.common.mapping.mapRequest
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toCreateResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toDeleteResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toErrorResponse
+import com.polyakovworkbox.tasktracker.backend.common.mapping.toLog
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toReadResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toSearchResponse
 import com.polyakovworkbox.tasktracker.backend.common.mapping.toUpdateResponse
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
+import com.polyakovworkbox.tasktracker.backend.logging.loggerFor
 import com.polyakovworkbox.tasktracker.backend.logics.TaskCrud
+import org.slf4j.event.Level
 import java.lang.IllegalArgumentException
 
 open class TaskService(
     var crud: TaskCrud
 ) {
 
+    private val logger = loggerFor(this::class.java)
+
     suspend fun create(context: BeContext, request: CreateTaskRequest): BaseResponse {
-        crud.create(context.mapRequest(request))
-        return context.toCreateResponse()
+        context.mapRequest(request)
+
+        return context.handle("createTask", BeContext::toCreateResponse) {
+            crud.create(it)
+        }
     }
 
     suspend fun read(context: BeContext, request: ReadTaskRequest): BaseResponse {
-        crud.read(context.mapRequest(request))
-        return context.toReadResponse()
+        context.mapRequest(request)
+
+        return context.handle("readTask", BeContext::toReadResponse) {
+            crud.read(it)
+        }
     }
 
     suspend fun update(context: BeContext, request: UpdateTaskRequest): BaseResponse {
-        crud.update(context.mapRequest(request))
-        return context.toUpdateResponse()
+        context.mapRequest(request)
+
+        return context.handle("updateTask", BeContext::toUpdateResponse) {
+            crud.update(it)
+        }
     }
 
     suspend fun delete(context: BeContext, request: DeleteTaskRequest): BaseResponse {
-        crud.delete(context.mapRequest(request))
-        return context.toDeleteResponse()
+        context.mapRequest(request)
+
+        return context.handle("deleteTask", BeContext::toDeleteResponse) {
+            crud.delete(it)
+        }
     }
 
     suspend fun search(context: BeContext, request: SearchTasksRequest): BaseResponse {
-        crud.search(context.mapRequest(request))
-        return context.toSearchResponse()
+        context.mapRequest(request)
+
+        return context.handle("searchTask", BeContext::toSearchResponse) {
+            crud.search(it)
+        }
     }
 
     suspend inline fun <reified T : BaseResponse> toError(context: BeContext, e: Throwable,
@@ -103,4 +123,24 @@ open class TaskService(
             }
             else -> throw IllegalArgumentException("Request is not Allowed: $baseMessage")
         }
+
+    private suspend fun <T> BeContext.handle(
+        logId: String,
+        mapper: BeContext.() -> T,
+        block: suspend (BeContext) -> Unit = {}
+    ): T {
+        logger.log(
+            msg = "Request got, query = {}",
+            level = Level.INFO,
+            data = toLog("$logId-request-got")
+        )
+        block(this)
+        return mapper().also {
+            logger.log(
+                msg = "Response ready, response = {}",
+                level = Level.INFO,
+                data = toLog("$logId-request-handled")
+            )
+        }
+    }
 }

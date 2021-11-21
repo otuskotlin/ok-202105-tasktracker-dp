@@ -19,11 +19,11 @@ suspend fun <T> Logger.wrapWithLogging(
     throw e
 }
 
-fun mpLogger(loggerId: String): LogWrapper = mpLogger(
+fun loggerFor(loggerId: String): LogWrapper = loggerFor(
     logger = LoggerFactory.getLogger(loggerId) as Logger
 )
 
-fun mpLogger(cls: Class<out Any>): LogWrapper = mpLogger(
+fun loggerFor(cls: Class<out Any>): LogWrapper = loggerFor(
     logger = LoggerFactory.getLogger(cls) as Logger
 )
 
@@ -32,7 +32,7 @@ fun mpLogger(cls: Class<out Any>): LogWrapper = mpLogger(
  *
  * @param logger Logback instance from [LoggerFactory.getLogger()]
  */
-fun mpLogger(logger: Logger): LogWrapper = LogWrapper(
+fun loggerFor(logger: Logger): LogWrapper = LogWrapper(
     logger = logger,
     loggerId = logger.name,
 )
