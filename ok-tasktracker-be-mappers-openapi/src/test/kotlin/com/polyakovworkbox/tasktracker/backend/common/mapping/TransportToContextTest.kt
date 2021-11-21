@@ -240,7 +240,7 @@ internal class TransportToContextTest {
             progressMarkFilterEquality = EqualityMode.LESS_THAN,
             dueTimeFilter = null,
             dueTimeFilterEquality = EqualityMode.MORE_THAN,
-            prentIdFilter = "parent-id-filter",
+            parentIdFilter = "parent-id-filter",
             childIdFilter = "child-id-filter"
         )
 

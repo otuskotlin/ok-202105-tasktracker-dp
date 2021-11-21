@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":ok-tasktracker-be-service-openapi"))
     implementation(project(":ok-tasktracker-be-logic"))
     implementation(project(":ok-tasktracker-be-repo-inmemory"))
+    implementation(project(":ok-tasktracker-be-logging"))
 }
 
 tasks.withType<KotlinCompile> {

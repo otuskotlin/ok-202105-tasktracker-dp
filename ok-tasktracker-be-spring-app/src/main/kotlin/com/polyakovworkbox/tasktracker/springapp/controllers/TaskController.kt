@@ -14,10 +14,12 @@ import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.
 import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Operation
 import com.polyakovworkbox.tasktracker.backend.common.models.general.Principal
+import com.polyakovworkbox.tasktracker.backend.logging.loggerFor
 import com.polyakovworkbox.tasktracker.springapp.mappers.toUserGroups
 import com.polyakovworkbox.tasktracker.springapp.services.TaskService
 import kotlinx.coroutines.runBlocking
 import org.keycloak.KeycloakPrincipal
+import org.slf4j.event.Level
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,6 +33,8 @@ class TaskController(
     val taskService: TaskService
 ) {
 
+    private val logger = loggerFor(this::class.java)
+
     @PostMapping("create")
     fun createTask(@RequestBody request: CreateTaskRequest): BaseResponse {
         val context = BeContext(startTime = Instant.now())
@@ -40,7 +44,12 @@ class TaskController(
         context.operation = Operation.CREATE
 
         return try {
-            runBlocking { taskService.create(context, request) }
+            runBlocking {
+                logger.doWithLogging("createTask", Level.INFO, suspend {
+                    taskService.create(context, request)
+                })
+            }
+
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::CreateTaskResponse) }
         }
@@ -55,7 +64,11 @@ class TaskController(
         context.operation = Operation.READ
 
         return try {
-            runBlocking { taskService.read(context, request) }
+            runBlocking {
+                logger.doWithLogging("readTask", Level.INFO, suspend {
+                    taskService.read(context, request)
+                })
+            }
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::ReadTaskResponse) }
         }
@@ -71,7 +84,11 @@ class TaskController(
         context.operation = Operation.UPDATE
 
         return try {
-            runBlocking { taskService.update(context, request) }
+            runBlocking {
+                logger.doWithLogging("updateTask", Level.INFO, suspend {
+                    taskService.update(context, request)
+                })
+            }
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::UpdateTaskResponse) }
         }
@@ -86,7 +103,11 @@ class TaskController(
         context.operation = Operation.DELETE
 
         return try {
-            runBlocking { taskService.delete(context, request) }
+            runBlocking {
+                logger.doWithLogging("deleteTask", Level.INFO, suspend {
+                    taskService.delete(context, request)
+                })
+            }
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::DeleteTaskResponse) }
         }
@@ -101,7 +122,11 @@ class TaskController(
         context.operation = Operation.SEARCH
 
         return try {
-            runBlocking { taskService.search(context, request) }
+            runBlocking {
+                logger.doWithLogging("searchTask", Level.INFO, suspend {
+                    taskService.search(context, request)
+                })
+            }
         } catch (e: Throwable) {
             runBlocking { taskService.toError(context, e, ::SearchTasksResponse) }
         }

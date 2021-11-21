@@ -2,8 +2,11 @@ package com.polyakovworkbox.tasktracker.backend.common.mapping
 
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ApiError
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.BaseResponse
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CommonLogModel
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.CreateTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.DeleteTaskResponse
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.EqualityMode
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.LogModel
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.Measurability
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ReadTaskResponse
 import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.ResponseResult
@@ -14,9 +17,14 @@ import com.polyakovworkbox.tasktracker.backend.common.context.BeContext
 import com.polyakovworkbox.tasktracker.backend.common.context.ResponseStatus
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskId
 import com.polyakovworkbox.tasktracker.backend.common.models.task.TaskIdReference
+import com.polyakovworkbox.otuskotlin.tasktracker.transport.openapi.task.models.SearchFilter
+import java.time.Instant
+import java.util.*
 import com.polyakovworkbox.tasktracker.backend.common.models.general.ApiError as DomainApiError
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Task as TaskDomain
 import com.polyakovworkbox.tasktracker.backend.common.models.task.Measurability as MeasurabilityDomain
+import com.polyakovworkbox.tasktracker.backend.common.models.task.filter.SearchFilter as SearchFilterDomain
+
 
 fun BeContext.toCreateResponse() = CreateTaskResponse(
     responseId = responseId.id,
@@ -112,4 +120,34 @@ private fun MeasurabilityDomain.mapToTransport(): Measurability =
         description = description.description,
         progressMark = progress.percent
     )
+
+private fun SearchFilterDomain.mapToTransport(): SearchFilter =
+    SearchFilter(
+        nameFilter = this.nameFilter.name,
+        descriptionFilter = this.descriptionFilter.description,
+        attainabilityDescriptionFilter = this.attainabilityDescriptionFilter.description,
+        relevanceDescriptionFilter = this.relevanceDescriptionFilter.description,
+        dueTimeFilter = this.dueTimeFilter.dueTime.toString(),
+        dueTimeFilterEquality = EqualityMode.valueOf(this.dueTimeFilterEquality.name),
+        measurabilityDescriptionFilter = this.measurabilityDescriptionFilter.description,
+        progressMarkFilter = this.progressMarkFilter.percent,
+        progressMarkFilterEquality = EqualityMode.valueOf(this.progressMarkFilterEquality.name),
+        parentIdFilter = this.parentIdFilter.id,
+        childIdFilter = this.childIdFilter.id
+    )
+
+fun BeContext.toLog(logId: String) = CommonLogModel(
+    messageId = UUID.randomUUID().toString(),
+    messageTime = Instant.now().toString(),
+    logId = logId,
+    source = "ok-tasktracker",
+    task = LogModel(
+        requestTaskId = requestTaskId.takeIf { it != TaskId.NONE }?.id,
+        requestTask = requestTask.takeIf { it != com.polyakovworkbox.tasktracker.backend.common.models.task.Task() }?.mapToTransport(),
+        searchFilter = searchFilter.mapToTransport(),
+        responseTasks = responseTasks.mapTasksToTransport().takeIf { it.isNotEmpty() } ?: mutableListOf(responseTask).mapTasksToTransport()
+    ),
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.mapToTransport() }
+
+)
 

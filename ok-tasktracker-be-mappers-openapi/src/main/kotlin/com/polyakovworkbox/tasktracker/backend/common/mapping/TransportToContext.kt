@@ -135,7 +135,7 @@ fun SearchFilterDomain.mapFrom(searchFilter: SearchFilter?) : SearchFilterDomain
     measurabilityDescriptionFilter = measurabilityDescriptionFilter.mapFrom(searchFilter.measurabilityDescriptionFilter)
     progressMarkFilter = progressMarkFilter.mapFrom(searchFilter.progressMarkFilter)
     progressMarkFilterEquality = progressMarkFilterEquality.mapFrom(searchFilter.progressMarkFilterEquality)
-    parentIdFilter = parentIdFilter.mapFrom(searchFilter.prentIdFilter)
+    parentIdFilter = parentIdFilter.mapFrom(searchFilter.parentIdFilter)
     childIdFilter = childIdFilter.mapFrom(searchFilter.childIdFilter)
 
     return this
